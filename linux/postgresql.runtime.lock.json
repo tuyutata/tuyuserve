@@ -1,0 +1,15 @@
+{
+  "component": "PostgreSQL",
+  "version": "17.11",
+  "architecture": "linux-arm64",
+  "source_url": "https://ftp.postgresql.org/pub/source/v17.11/postgresql-17.11.tar.bz2",
+  "source_sha256": "dd27f2b3c59e73ed14aa3324901242bf69a032a6347805f274e6260322d42979",
+  "install_prefix": "/opt/tuyuserve/postgresql",
+  "configure_options": [
+    "--without-readline",
+    "--without-zlib",
+    "--without-icu",
+    "--without-lz4",
+    "--without-zstd"
+  ]
+}

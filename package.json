@@ -1,0 +1,33 @@
+{
+  "name": "tuyuserve",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "25.2.1"
+  },
+  "scripts": {
+    "dev": "wrangler dev --local --local-protocol https",
+    "generate:types": "CI=1 WRANGLER_SEND_METRICS=false wrangler types --env-interface CloudflareBindings && node -e \"const fs=require('node:fs');const p='worker-configuration.d.ts';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/[ \\\\t]+$/gm,''));\"",
+    "typecheck": "npm run generate:types && tsc --noEmit",
+    "test": "vitest run",
+    "test:linux": "node --test linux/*.test.mjs",
+    "build:linux": "node linux/build.mjs",
+    "export:cloudflare": "node linux/cloudflare-export.mjs",
+    "import:linux": "node linux/import.mjs",
+    "db:local": "wrangler d1 execute DB --local --file schema.sql"
+  },
+  "dependencies": {
+    "@polkadot/util-crypto": "14.0.3",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "typescript": "6.0.2",
+    "vitest": "3.2.7",
+    "wrangler": "4.121.0"
+  },
+  "overrides": {
+    "undici": "7.29.0"
+  }
+}

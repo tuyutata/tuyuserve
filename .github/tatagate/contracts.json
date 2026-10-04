@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "repository": "tuyuserve",
+  "workflows": [
+    "tuyuserve.cloudflare.ci",
+    "tuyuserve.cloudflare.release",
+    "tuyuserve.linux-arm.ci",
+    "tuyuserve.linux-arm.release"
+  ],
+  "node_tests": [
+    "scripts/ci/cloudflare/cloudflare/test.mjs",
+    "scripts/ci/linux-arm/linux-arm64/test.mjs",
+    "scripts/release/cloudflare/cloudflare/test.mjs",
+    "scripts/release/linux-arm/linux-arm64/test.mjs"
+  ],
+  "checks": [
+    "repository-contracts"
+  ],
+  "tools": {
+    "node": "25.2.1",
+    "actionlint": "1.7.12",
+    "rust": null
+  },
+  "platform_forbidden_values": [
+    "macOS ARM64",
+    "macos-arm64",
+    "macos_arm64"
+  ]
+}

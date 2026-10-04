@@ -1,0 +1,981 @@
+{
+  "schema_version": 1,
+  "authority_directory": "tuyuserve/logo",
+  "vector_source": {
+    "path": "tuyuserve/logo/途遇AI.ai",
+    "sha256": "24e0489b8b10e47d3b7bba009c74b1cb94d915087150db928e9722980442531b"
+  },
+  "bitmap_source": {
+    "path": "tuyuserve/logo/途遇墨绿色500.png",
+    "width": 500,
+    "height": 500,
+    "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+  },
+  "images": [
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 72,
+      "height": 72,
+      "sha256": "175c841d2408a794d8927432fcf772e4a96fa0efc7ebaeb83d9b493595466c3b"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-hdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 48,
+      "height": 48,
+      "sha256": "8a1c098c88965c90c31252b34d9402e86cbc38f0b9d6ecd1ac4bf4f4ed9c8457"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-mdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 96,
+      "height": 96,
+      "sha256": "3b9f5018935f579cdc7bcecf24383cc9f5cc9234b149cbce7c5a69673a7c3e0f"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 144,
+      "height": 144,
+      "sha256": "5464f946486181231d684ec57baf798536910f9f2c6b418eb8388c8cc1123a05"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/mipmap-xxxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyubooking/app/tuyu_logo.png",
+      "purpose": "page-brand",
+      "width": 500,
+      "height": 500,
+      "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 20,
+      "height": 20,
+      "sha256": "17476ac9118921aa4370536d58a66678441af2d19ccda6fecd630a9f5704ede9"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 60,
+      "height": 60,
+      "sha256": "d4ef2bf962aec41a2ff7e11ce227a03e947ceff1763d4f1ea13b59a7ee912d24"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 29,
+      "height": 29,
+      "sha256": "c1135653bf5e879a03ec79971088e4ace0beb9b947c72c8fa94d8dd61360e185"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 58,
+      "height": 58,
+      "sha256": "e7244c76e8d909fe09e7f309552beca8cf9d8c3d6767ebcc190060276b346405"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 87,
+      "height": 87,
+      "sha256": "0c39552a487ae8f89431c93f43f3eeedc66db6c4bf22bf7c6c6df7fe3b37d2b3"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 80,
+      "height": 80,
+      "sha256": "de39a892edcf0e135dc11f92b9e3bb158ec6a18725af8724bd67b8f71ae6a555"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 180,
+      "height": 180,
+      "sha256": "b4a4f66bf98506cbd1fda12159ef38fcabd5639b9e0b99b969a2cff96f0c377d"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 76,
+      "height": 76,
+      "sha256": "4418b9b4411bcc313ebc4a2b633263b37dcc963472b802d12777f6f44a6ec43f"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 152,
+      "height": 152,
+      "sha256": "61d6e760598d26be1cc20b323da11434ff7c5d1f70cbd6276780e8edd8ce95b6"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 167,
+      "height": 167,
+      "sha256": "286a275b83655516b83163d393cb06d8fe564b51a665a48d3a942071e337fd26"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "purpose": "ios-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "purpose": "ios-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyubooking/app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "purpose": "ios-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_1024.png",
+      "purpose": "macos-app-icon",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_128.png",
+      "purpose": "macos-app-icon",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_16.png",
+      "purpose": "macos-app-icon",
+      "width": 16,
+      "height": 16,
+      "sha256": "b119e2f733b72233af1968844e3bfc03dfadcef15a2962e6dacf31bccf866539"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_256.png",
+      "purpose": "macos-app-icon",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_32.png",
+      "purpose": "macos-app-icon",
+      "width": 32,
+      "height": 32,
+      "sha256": "2854a08df5603c9b1fe793d8a73e56d55c8a16a9314c88556176c24e1588f7fc"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_512.png",
+      "purpose": "macos-app-icon",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyubooking/app/macos/Runner/AppIcon.appiconset/app_icon_64.png",
+      "purpose": "macos-app-icon",
+      "width": 64,
+      "height": 64,
+      "sha256": "b6c83ab70961cb640bfbfa43df7330349db36503fe9e4c5dbb58a2ca7a035323"
+    },
+    {
+      "path": "tuyufactory/app/tuyu_logo.png",
+      "purpose": "page-brand",
+      "width": 500,
+      "height": 500,
+      "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_1024.png",
+      "purpose": "macos-app-icon",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_128.png",
+      "purpose": "macos-app-icon",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_16.png",
+      "purpose": "macos-app-icon",
+      "width": 16,
+      "height": 16,
+      "sha256": "b119e2f733b72233af1968844e3bfc03dfadcef15a2962e6dacf31bccf866539"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_256.png",
+      "purpose": "macos-app-icon",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_32.png",
+      "purpose": "macos-app-icon",
+      "width": 32,
+      "height": 32,
+      "sha256": "2854a08df5603c9b1fe793d8a73e56d55c8a16a9314c88556176c24e1588f7fc"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_512.png",
+      "purpose": "macos-app-icon",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyufactory/app/macos/Runner/AppIcon.appiconset/app_icon_64.png",
+      "purpose": "macos-app-icon",
+      "width": 64,
+      "height": 64,
+      "sha256": "b6c83ab70961cb640bfbfa43df7330349db36503fe9e4c5dbb58a2ca7a035323"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 72,
+      "height": 72,
+      "sha256": "175c841d2408a794d8927432fcf772e4a96fa0efc7ebaeb83d9b493595466c3b"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-hdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 48,
+      "height": 48,
+      "sha256": "8a1c098c88965c90c31252b34d9402e86cbc38f0b9d6ecd1ac4bf4f4ed9c8457"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-mdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 96,
+      "height": 96,
+      "sha256": "3b9f5018935f579cdc7bcecf24383cc9f5cc9234b149cbce7c5a69673a7c3e0f"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 144,
+      "height": 144,
+      "sha256": "5464f946486181231d684ec57baf798536910f9f2c6b418eb8388c8cc1123a05"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/mipmap-xxxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyulife/tuyu_logo.png",
+      "purpose": "page-brand",
+      "width": 500,
+      "height": 500,
+      "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 20,
+      "height": 20,
+      "sha256": "17476ac9118921aa4370536d58a66678441af2d19ccda6fecd630a9f5704ede9"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 60,
+      "height": 60,
+      "sha256": "d4ef2bf962aec41a2ff7e11ce227a03e947ceff1763d4f1ea13b59a7ee912d24"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 29,
+      "height": 29,
+      "sha256": "c1135653bf5e879a03ec79971088e4ace0beb9b947c72c8fa94d8dd61360e185"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 58,
+      "height": 58,
+      "sha256": "e7244c76e8d909fe09e7f309552beca8cf9d8c3d6767ebcc190060276b346405"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 87,
+      "height": 87,
+      "sha256": "0c39552a487ae8f89431c93f43f3eeedc66db6c4bf22bf7c6c6df7fe3b37d2b3"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 80,
+      "height": 80,
+      "sha256": "de39a892edcf0e135dc11f92b9e3bb158ec6a18725af8724bd67b8f71ae6a555"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 180,
+      "height": 180,
+      "sha256": "b4a4f66bf98506cbd1fda12159ef38fcabd5639b9e0b99b969a2cff96f0c377d"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 76,
+      "height": 76,
+      "sha256": "4418b9b4411bcc313ebc4a2b633263b37dcc963472b802d12777f6f44a6ec43f"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 152,
+      "height": 152,
+      "sha256": "61d6e760598d26be1cc20b323da11434ff7c5d1f70cbd6276780e8edd8ce95b6"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 167,
+      "height": 167,
+      "sha256": "286a275b83655516b83163d393cb06d8fe564b51a665a48d3a942071e337fd26"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "purpose": "ios-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "purpose": "ios-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyulife/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "purpose": "ios-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 72,
+      "height": 72,
+      "sha256": "175c841d2408a794d8927432fcf772e4a96fa0efc7ebaeb83d9b493595466c3b"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-hdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 48,
+      "height": 48,
+      "sha256": "8a1c098c88965c90c31252b34d9402e86cbc38f0b9d6ecd1ac4bf4f4ed9c8457"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-mdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 96,
+      "height": 96,
+      "sha256": "3b9f5018935f579cdc7bcecf24383cc9f5cc9234b149cbce7c5a69673a7c3e0f"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 144,
+      "height": 144,
+      "sha256": "5464f946486181231d684ec57baf798536910f9f2c6b418eb8388c8cc1123a05"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "purpose": "android-launcher",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/mipmap-xxxhdpi/launch_image.png",
+      "purpose": "android-splash",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyulove/tuyu_logo.png",
+      "purpose": "page-brand",
+      "width": 500,
+      "height": 500,
+      "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 20,
+      "height": 20,
+      "sha256": "17476ac9118921aa4370536d58a66678441af2d19ccda6fecd630a9f5704ede9"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 60,
+      "height": 60,
+      "sha256": "d4ef2bf962aec41a2ff7e11ce227a03e947ceff1763d4f1ea13b59a7ee912d24"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 29,
+      "height": 29,
+      "sha256": "c1135653bf5e879a03ec79971088e4ace0beb9b947c72c8fa94d8dd61360e185"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 58,
+      "height": 58,
+      "sha256": "e7244c76e8d909fe09e7f309552beca8cf9d8c3d6767ebcc190060276b346405"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 87,
+      "height": 87,
+      "sha256": "0c39552a487ae8f89431c93f43f3eeedc66db6c4bf22bf7c6c6df7fe3b37d2b3"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 80,
+      "height": 80,
+      "sha256": "de39a892edcf0e135dc11f92b9e3bb158ec6a18725af8724bd67b8f71ae6a555"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "purpose": "ios-app-icon",
+      "width": 180,
+      "height": 180,
+      "sha256": "b4a4f66bf98506cbd1fda12159ef38fcabd5639b9e0b99b969a2cff96f0c377d"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "purpose": "ios-app-icon",
+      "width": 76,
+      "height": 76,
+      "sha256": "4418b9b4411bcc313ebc4a2b633263b37dcc963472b802d12777f6f44a6ec43f"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 152,
+      "height": 152,
+      "sha256": "61d6e760598d26be1cc20b323da11434ff7c5d1f70cbd6276780e8edd8ce95b6"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "purpose": "ios-app-icon",
+      "width": 167,
+      "height": 167,
+      "sha256": "286a275b83655516b83163d393cb06d8fe564b51a665a48d3a942071e337fd26"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "purpose": "ios-splash",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "purpose": "ios-splash",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyulove/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "purpose": "ios-splash",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-100.png",
+      "purpose": "canonical-100",
+      "width": 100,
+      "height": 100,
+      "sha256": "b2b36c52a9d30bd94cc9e9c32e7c7201829ba56b64c6b269b2663c9da73fb2ae"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-1024.png",
+      "purpose": "canonical-1024",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "c36ddbc44a2c004b0fd80340a866a6c2ce01a2cc1ce2c9c619969660d001a6a9"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-120.png",
+      "purpose": "canonical-120",
+      "width": 120,
+      "height": 120,
+      "sha256": "fead8eb086ef1428152ebafb1c640d7c22156cad7e239eed48a4e53f98b840c7"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-128.png",
+      "purpose": "canonical-128",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5fef19610fa4922a4f61a4cff4d54fda050789f9a4380733a58c1f30a0b422"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-144.png",
+      "purpose": "canonical-144",
+      "width": 144,
+      "height": 144,
+      "sha256": "5464f946486181231d684ec57baf798536910f9f2c6b418eb8388c8cc1123a05"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-152.png",
+      "purpose": "canonical-152",
+      "width": 152,
+      "height": 152,
+      "sha256": "61d6e760598d26be1cc20b323da11434ff7c5d1f70cbd6276780e8edd8ce95b6"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-16.png",
+      "purpose": "canonical-16",
+      "width": 16,
+      "height": 16,
+      "sha256": "b119e2f733b72233af1968844e3bfc03dfadcef15a2962e6dacf31bccf866539"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-167.png",
+      "purpose": "canonical-167",
+      "width": 167,
+      "height": 167,
+      "sha256": "286a275b83655516b83163d393cb06d8fe564b51a665a48d3a942071e337fd26"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-180.png",
+      "purpose": "canonical-180",
+      "width": 180,
+      "height": 180,
+      "sha256": "b4a4f66bf98506cbd1fda12159ef38fcabd5639b9e0b99b969a2cff96f0c377d"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-192.png",
+      "purpose": "canonical-192",
+      "width": 192,
+      "height": 192,
+      "sha256": "2f5ea0f77c10010d673a9401abfe27a93074e2430e063c06591b6220418d1277"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-20.png",
+      "purpose": "canonical-20",
+      "width": 20,
+      "height": 20,
+      "sha256": "17476ac9118921aa4370536d58a66678441af2d19ccda6fecd630a9f5704ede9"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-256.png",
+      "purpose": "canonical-256",
+      "width": 256,
+      "height": 256,
+      "sha256": "69d7609fd8b9291632d62c5ce18ec1de9a5bfd0e323d14eef80b9259c2582193"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-29.png",
+      "purpose": "canonical-29",
+      "width": 29,
+      "height": 29,
+      "sha256": "c1135653bf5e879a03ec79971088e4ace0beb9b947c72c8fa94d8dd61360e185"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-32.png",
+      "purpose": "canonical-32",
+      "width": 32,
+      "height": 32,
+      "sha256": "2854a08df5603c9b1fe793d8a73e56d55c8a16a9314c88556176c24e1588f7fc"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-384.png",
+      "purpose": "canonical-384",
+      "width": 384,
+      "height": 384,
+      "sha256": "389e855cbae798a34a9cb6977672f5a35f8dcc2d53e2cfb19dd85e13d45e4ae3"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-40.png",
+      "purpose": "canonical-40",
+      "width": 40,
+      "height": 40,
+      "sha256": "866909310c6baaf5182c9c82f330f76702fca39606de23b7060581bda0b89932"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-48.png",
+      "purpose": "canonical-48",
+      "width": 48,
+      "height": 48,
+      "sha256": "8a1c098c88965c90c31252b34d9402e86cbc38f0b9d6ecd1ac4bf4f4ed9c8457"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-512.png",
+      "purpose": "canonical-512",
+      "width": 512,
+      "height": 512,
+      "sha256": "3bccaafa82eaa396daf35fc2c086819acb6a10c87b894e20e2ebf90948194215"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-58.png",
+      "purpose": "canonical-58",
+      "width": 58,
+      "height": 58,
+      "sha256": "e7244c76e8d909fe09e7f309552beca8cf9d8c3d6767ebcc190060276b346405"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-60.png",
+      "purpose": "canonical-60",
+      "width": 60,
+      "height": 60,
+      "sha256": "d4ef2bf962aec41a2ff7e11ce227a03e947ceff1763d4f1ea13b59a7ee912d24"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-64.png",
+      "purpose": "canonical-64",
+      "width": 64,
+      "height": 64,
+      "sha256": "b6c83ab70961cb640bfbfa43df7330349db36503fe9e4c5dbb58a2ca7a035323"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-76.png",
+      "purpose": "canonical-76",
+      "width": 76,
+      "height": 76,
+      "sha256": "4418b9b4411bcc313ebc4a2b633263b37dcc963472b802d12777f6f44a6ec43f"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-80.png",
+      "purpose": "canonical-80",
+      "width": 80,
+      "height": 80,
+      "sha256": "de39a892edcf0e135dc11f92b9e3bb158ec6a18725af8724bd67b8f71ae6a555"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-87.png",
+      "purpose": "canonical-87",
+      "width": 87,
+      "height": 87,
+      "sha256": "0c39552a487ae8f89431c93f43f3eeedc66db6c4bf22bf7c6c6df7fe3b37d2b3"
+    },
+    {
+      "path": "tuyuserve/logo/generated/tuyu-logo-96.png",
+      "purpose": "canonical-96",
+      "width": 96,
+      "height": 96,
+      "sha256": "3b9f5018935f579cdc7bcecf24383cc9f5cc9234b149cbce7c5a69673a7c3e0f"
+    },
+    {
+      "path": "tuyuweb/public/assets/tuyu-logo.png",
+      "purpose": "page-brand",
+      "width": 500,
+      "height": 500,
+      "sha256": "27391305fe4e564dfceb54284383525901b3f70b39ff57e12e552f9eb4aa7b89"
+    }
+  ],
+  "windows_icons": [
+    {
+      "path": "tuyubooking/app/windows/runner/app_icon.ico",
+      "purpose": "windows-app-icon",
+      "sha256": "84d285dfb2391d57ade1271f2c76ba3ebb90cbf9e74dafb9305ea126e63d0ca4"
+    },
+    {
+      "path": "tuyufactory/app/windows/runner/app_icon.ico",
+      "purpose": "windows-app-icon",
+      "sha256": "84d285dfb2391d57ade1271f2c76ba3ebb90cbf9e74dafb9305ea126e63d0ca4"
+    }
+  ],
+  "android_resources": [
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/drawable-v26/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "5a59b19308bdb0ed600c344201667d285f35e68a4daff2e36c980a0633e01010"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/drawable-v26/app_icon_background.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "f62322a13ecbbf15bffdde96c80e10b43c2c1e70ac536e6a1ec797f8a6bf9db3"
+    },
+    {
+      "path": "tuyubooking/app/android/app/src/main/res/drawable/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "3c712b7fcb7f9145f94a10dec804b33e6fd158de5923cf002befcfae25676a43"
+    },
+    {
+      "path": "tuyufactory/app/android/app/src/main/res/drawable-v26/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "fb9d08bde84e832bf3a9fe1d4026039750245dad712498be1f6a3cf6739d11e7"
+    },
+    {
+      "path": "tuyufactory/app/android/app/src/main/res/drawable-v26/app_icon_background.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "f62322a13ecbbf15bffdde96c80e10b43c2c1e70ac536e6a1ec797f8a6bf9db3"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/drawable-v26/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "5a59b19308bdb0ed600c344201667d285f35e68a4daff2e36c980a0633e01010"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/drawable-v26/app_icon_background.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "f62322a13ecbbf15bffdde96c80e10b43c2c1e70ac536e6a1ec797f8a6bf9db3"
+    },
+    {
+      "path": "tuyulove/android/app/src/main/res/drawable/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "3c712b7fcb7f9145f94a10dec804b33e6fd158de5923cf002befcfae25676a43"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/drawable-v26/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "5a59b19308bdb0ed600c344201667d285f35e68a4daff2e36c980a0633e01010"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/drawable-v26/app_icon_background.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "f62322a13ecbbf15bffdde96c80e10b43c2c1e70ac536e6a1ec797f8a6bf9db3"
+    },
+    {
+      "path": "tuyulife/android/app/src/main/res/drawable/app_icon.xml",
+      "purpose": "android-launcher-resource",
+      "sha256": "3c712b7fcb7f9145f94a10dec804b33e6fd158de5923cf002befcfae25676a43"
+    }
+  ]
+}

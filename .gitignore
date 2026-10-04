@@ -1,0 +1,12 @@
+node_modules/
+.wrangler/
+coverage/
+.dev.vars
+*.log
+
+# macOS Finder 元数据
+.DS_Store
+
+# 本机 AI 入口直接解析唯一规则；产品源码不跟踪本机链接。
+/CODEX.md
+/CLAUDE.md
