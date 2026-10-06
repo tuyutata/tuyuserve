@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "product_id": "tuyuserve",
+  "entry": "scripts/build.mjs",
+  "platforms": {
+    "cloudflare": {
+      "tools": [
+        {
+          "id": "git",
+          "version": "2.54.0"
+        },
+        {
+          "id": "node",
+          "version": "25.2.1"
+        },
+        {
+          "id": "posix",
+          "version": "27.0"
+        }
+      ],
+      "locks": [
+        {
+          "ecosystem": "npm",
+          "path": "package-lock.json"
+        }
+      ],
+      "ci": {
+        "entry": ".github/workflows/tuyuserve-cloudflare-ci.yml",
+        "tools": [
+          {
+            "id": "git",
+            "version": "2.54.0"
+          },
+          {
+            "id": "node",
+            "version": "25.2.1"
+          }
+        ]
+      },
+      "release": {
+        "entry": ".github/workflows/tuyuserve-cloudflare-release.yml",
+        "tools": [
+          {
+            "id": "git",
+            "version": "2.54.0"
+          },
+          {
+            "id": "node",
+            "version": "25.2.1"
+          }
+        ]
+      }
+    },
+    "linux-arm": {
+      "tools": [
+        {
+          "id": "git",
+          "version": "2.54.0"
+        },
+        {
+          "id": "node",
+          "version": "25.2.1"
+        },
+        {
+          "id": "posix",
+          "version": "27.0"
+        }
+      ],
+      "locks": [
+        {
+          "ecosystem": "npm",
+          "path": "package-lock.json"
+        }
+      ],
+      "ci": {
+        "entry": ".github/workflows/tuyuserve-linux-arm-ci.yml",
+        "tools": [
+          {
+            "id": "git",
+            "version": "2.54.0"
+          },
+          {
+            "id": "node",
+            "version": "25.2.1"
+          }
+        ]
+      },
+      "release": {
+        "entry": ".github/workflows/tuyuserve-linux-arm-release.yml",
+        "tools": [
+          {
+            "id": "git",
+            "version": "2.54.0"
+          },
+          {
+            "id": "node",
+            "version": "25.2.1"
+          }
+        ]
+      }
+    }
+  }
+}
