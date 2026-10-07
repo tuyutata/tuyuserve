@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { remoteEnvironment as productRemoteEnvironment } from '../../build.mjs';
+if(process.env.GITHUB_ACTIONS==='true'&&String(process.env.GITHUB_WORKFLOW||'').startsWith('tuyuserve.'))Object.assign(process.env,productRemoteEnvironment());
 // RELEASE_BUILD: full; CARGO_INCREMENTAL=0
 // 当前入口按产品与平台验真 CI 来源，并创建对应的 GitHub Release 资产。
 

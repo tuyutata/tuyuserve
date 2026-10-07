@@ -3,7 +3,8 @@
 
 import { execFileSync, spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { temporaryRoot } from '../../build.mjs';
+const tmpdir=()=>temporaryRoot('cloudflare','ci');
 import { join } from 'node:path';
 
 function required(value, message) {
