@@ -116,21 +116,3 @@ export interface TripPostRow {
   created_at: number;
   updated_at: number;
 }
-
-export interface ChatConversationRow {
-  conversation_id: string;
-  participant_a: string;
-  participant_b: string;
-  created_at: number;
-  updated_at: number;
-}
-
-export interface ChatMessageRow {
-  message_id: string;
-  conversation_id: string;
-  sender_tuyu_id: string;
-  sequence: number;
-  content: string;
-  idempotency_key: string;
-  created_at: number;
-}

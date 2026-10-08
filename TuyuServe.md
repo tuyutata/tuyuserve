@@ -36,9 +36,9 @@ Android普通图标与自适应资源统一引用`@drawable/app_icon`；自适�
 前景在108dp图层中居中占66dp，不改画或裁剪正式Logo。`--android-only`只处理相应Android XML及清单，
 不重写其他平台图片；商家Flutter资源路径以`tuyubooking/app`为准。生成与校验不代表服务部署。
 
-塔塔控制台“途遇云端”第二行独立显示 TuyuServe。TuyuServe 与 TuyuChatServer 都固定登记
+TuyuServe固定登记下列平台：
 `cloudflare`平台显示编译、CI、Release、发布，`linux-arm`平台只显示编译、CI、Release；服务端不生成启动位或LinuxARM发布位。尚未接入的编译、CI、Release动作显示禁用
-“未接入”，不得隐藏、删除或借用 Cloudflare 动作。聊天服务按钮位于第一行 Web 发布右侧。
+“未接入”，不得隐藏、删除或借用 Cloudflare 动作。
 
 ## 产品总览
 
@@ -199,7 +199,7 @@ Base64、摘要不符、对象键与文件名不符、非安全整数、缺表�
 | `GET/POST /v1/trips` | 公开读取或由已登录用户幂等发布游记 |
 | `GET /v1/health` | 服务身份与健康检查 |
 
-聊天会话、消息同步、存储和推送由 TataChatServer 唯一实现；TuyuServe 的旧聊天路由不属于最终产品职责，不得继续作为接入方案。本轮仅纠正文档，旧代码及运行状态尚未复查。游记当前保存正文和对象键；媒体上传授权、缩略图和通知尚未实现。
+聊天会话、消息同步、存储和推送由TataChatServer唯一实现；TuyuServe明文聊天路由、实现、类型、schema表和Linux存储登记已删除。当前不接入聊天模块，不修改其他线上资源。游记当前保存正文和对象键；媒体上传授权、缩略图和通知尚未实现。
 
 #### 7. 商家、厂家和客户端边界
 
@@ -298,18 +298,6 @@ TuyuServe 产品根目录下的 `logo/` 是全部途遇产品唯一的 Logo 权�
 ## 双仓统一流程最终收口（第 7.5 步）
 
 本产品执行统一流程规则：本机编译中间物只进入本轮塔塔缓存库的build目录并按终态规则清理；GitHub CI 的作业过程数据只进入该次Runner任务空间；正式Release从干净编译状态执行。源码不进入塔塔缓存库、塔塔依赖库或塔塔产物库。
-
-## TuyuChatServer 产品边界
-
-TuyuChatServer 是 tuyutata/tuyuchatserver中的独立途遇主应用聊天服务实例，通用实现只来自 公开完整产品仓tuyutata/tatachatserver。正式地址固定为 `https://chat.tuyulove.com` 与 `wss://chat.tuyulove.com/realtime`，授权签发方是 TuyuServe，授权受众固定为 `tuyuchatserver`。
-
-`tuyuchatserver/` 只保存宿主声明和 Cloudflare 资源配置，不复制通用消息、附件、实时连接、OpenMLS 密文或系统推送实现。TuyuServe 只负责途遇产品身份与权益授权，不得实现或保留独立聊天数据面。旧聊天实现是否已经清除、运行流量是否已经接入 TuyuChatServer 尚未复查，不能把本次文档纠正表述为生产切换完成。
-
-### 途遇云端服务端行（2026-09-02）
-
-塔塔控制台“途遇云端”下行显示为“服务端”，其中 TuyuServe 与 TuyuChatServer 的按钮按两个独立
-产品登记顺序排列。该视觉分组不改变 TuyuServe 的既有 Cloudflare/LinuxARM 流程，也不把聊天
-服务动作、版本或记录并入 TuyuServe。
 
 ## 平台与部署字段合同冻结（TUYU 第 3.1 步，2026-09-02）
 

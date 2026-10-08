@@ -189,34 +189,3 @@ CREATE TABLE trip_posts (
   UNIQUE (author_tuyu_id, idempotency_key)
 );
 CREATE INDEX idx_trip_posts_public ON trip_posts(status, created_at DESC);
-
--- 两个途遇号之间只有一个会话，成员顺序使用字典序固定。
-CREATE TABLE chat_conversations (
-  conversation_id TEXT PRIMARY KEY,
-  participant_a TEXT NOT NULL,
-  participant_b TEXT NOT NULL,
-  next_sequence BIGINT NOT NULL DEFAULT 0 CHECK (next_sequence >= 0),
-  created_at BIGINT NOT NULL,
-  updated_at BIGINT NOT NULL,
-  FOREIGN KEY (participant_a) REFERENCES users(tuyu_id) ON DELETE CASCADE,
-  FOREIGN KEY (participant_b) REFERENCES users(tuyu_id) ON DELETE CASCADE,
-  UNIQUE (participant_a, participant_b),
-  CHECK (participant_a < participant_b)
-);
-CREATE INDEX idx_chat_conversations_recent ON chat_conversations(updated_at DESC);
-
-CREATE TABLE chat_messages (
-  message_id TEXT PRIMARY KEY,
-  conversation_id TEXT NOT NULL,
-  sender_tuyu_id TEXT NOT NULL,
-  sequence BIGINT NOT NULL CHECK (sequence > 0),
-  content TEXT NOT NULL,
-  idempotency_key TEXT NOT NULL,
-  created_at BIGINT NOT NULL,
-  FOREIGN KEY (conversation_id) REFERENCES chat_conversations(conversation_id)
-    ON DELETE CASCADE,
-  FOREIGN KEY (sender_tuyu_id) REFERENCES users(tuyu_id) ON DELETE CASCADE,
-  UNIQUE (conversation_id, sequence),
-  UNIQUE (conversation_id, sender_tuyu_id, idempotency_key)
-);
-CREATE INDEX idx_chat_messages_sync ON chat_messages(conversation_id, sequence);

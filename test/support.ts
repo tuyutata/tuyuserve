@@ -1,5 +1,5 @@
 import type {
-  CatalogListingRow, ChatConversationRow, ChatMessageRow, Env, LoginChallengeRow,
+  CatalogListingRow, Env, LoginChallengeRow,
   MerchantGrantRow, MerchantInstanceRow, SessionState, TripPostRow, TuyuSignerRow, UserRow,
 } from '../src/types';
 
@@ -126,37 +126,6 @@ class Statement {
       this.db.trips.set(row.trip_id, row);
       return { meta: { changes: 1 } };
     }
-    if (this.sql.includes('INSERT INTO chat_conversations')) {
-      const row: ChatConversationRow = {
-        conversation_id: this.values[0] as string,
-        participant_a: this.values[1] as string,
-        participant_b: this.values[2] as string,
-        created_at: this.values[3] as number,
-        updated_at: this.values[4] as number,
-      };
-      this.db.conversations.set(row.conversation_id, row);
-      return { meta: { changes: 1 } };
-    }
-    if (this.sql.includes('INSERT INTO chat_messages')) {
-      const conversationId = this.values[1] as string;
-      const row: ChatMessageRow = {
-        message_id: this.values[0] as string,
-        conversation_id: conversationId,
-        sender_tuyu_id: this.values[2] as string,
-        sequence: this.values[3] as number,
-        content: this.values[4] as string,
-        idempotency_key: this.values[5] as string,
-        created_at: this.values[6] as number,
-      };
-      this.db.messages.set(row.message_id, row);
-      return { meta: { changes: 1 } };
-    }
-    if (this.sql.includes('UPDATE chat_conversations SET updated_at')) {
-      const row = this.db.conversations.get(this.values[1] as string);
-      if (!row) return { meta: { changes: 0 } };
-      row.updated_at = this.values[0] as number;
-      return { meta: { changes: 1 } };
-    }
     if (this.sql.includes('DELETE FROM sessions WHERE session_token_hash')) {
       return { meta: { changes: this.db.sessions.delete(this.values[0] as string) ? 1 : 0 } };
     }
@@ -173,15 +142,6 @@ class Statement {
   }
 
   async first<T>(): Promise<T | null> {
-    if (this.sql.includes('UPDATE chat_conversations')) {
-      const conversationId = this.values[1] as string;
-      const row = this.db.conversations.get(conversationId);
-      if (!row) return null;
-      row.updated_at = this.values[0] as number;
-      const nextSequence = (this.db.chatSequences.get(conversationId) ?? 0) + 1;
-      this.db.chatSequences.set(conversationId, nextSequence);
-      return { next_sequence: nextSequence } as T;
-    }
     if (this.sql.includes('FROM software_releases')) {
       const tag = this.db.releases.get(`${this.values[0]}:${this.values[1]}`);
       return tag === undefined ? null : { version_tag: tag } as T;
@@ -224,23 +184,6 @@ class Statement {
         item.author_tuyu_id === this.values[0] && item.idempotency_key === this.values[1]);
       return (row as T | undefined) ?? null;
     }
-    if (this.sql.includes('FROM chat_conversations WHERE participant_a')) {
-      const row = [...this.db.conversations.values()].find((item) =>
-        item.participant_a === this.values[0] && item.participant_b === this.values[1]);
-      return (row as T | undefined) ?? null;
-    }
-    if (this.sql.includes('FROM chat_conversations WHERE conversation_id')) {
-      return (this.db.conversations.get(this.values[0] as string) as T | undefined) ?? null;
-    }
-    if (this.sql.includes('FROM chat_messages\n      WHERE conversation_id')) {
-      const row = [...this.db.messages.values()].find((item) =>
-        item.conversation_id === this.values[0] && item.sender_tuyu_id === this.values[1]
-          && item.idempotency_key === this.values[2]);
-      return (row as T | undefined) ?? null;
-    }
-    if (this.sql.includes('FROM chat_messages WHERE message_id')) {
-      return (this.db.messages.get(this.values[0] as string) as T | undefined) ?? null;
-    }
     return null;
   }
 
@@ -265,21 +208,6 @@ class Statement {
         .slice(0, this.values[0] as number);
       return { results: rows as T[] };
     }
-    if (this.sql.includes('FROM chat_conversations')) {
-      const rows = [...this.db.conversations.values()]
-        .filter((item) => item.participant_a === this.values[0] || item.participant_b === this.values[1])
-        .sort((left, right) => right.updated_at - left.updated_at)
-        .slice(0, this.values[2] as number);
-      return { results: rows as T[] };
-    }
-    if (this.sql.includes('FROM chat_messages')) {
-      const rows = [...this.db.messages.values()]
-        .filter((item) => item.conversation_id === this.values[0]
-          && item.sequence > (this.values[1] as number))
-        .sort((left, right) => left.sequence - right.sequence)
-        .slice(0, this.values[2] as number);
-      return { results: rows as T[] };
-    }
     return { results: [] };
   }
 }
@@ -294,9 +222,6 @@ export class MemoryDb {
   readonly sessions = new Map<string, SessionIndexRow>();
   readonly catalogListings = new Map<string, CatalogListingRow>();
   readonly trips = new Map<string, TripPostRow>();
-  readonly conversations = new Map<string, ChatConversationRow>();
-  readonly messages = new Map<string, ChatMessageRow>();
-  readonly chatSequences = new Map<string, number>();
   prepare(sql: string): Statement { return new Statement(this, sql) }
 }
 

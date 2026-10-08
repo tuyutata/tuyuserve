@@ -21,8 +21,6 @@ const TABLE_ORDER = Object.freeze({
   software_releases: ['product_id', 'platform'],
   catalog_listings: ['listing_id'],
   trip_posts: ['trip_id'],
-  chat_conversations: ['conversation_id'],
-  chat_messages: ['message_id'],
 });
 
 function required(name) {

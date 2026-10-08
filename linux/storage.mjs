@@ -19,8 +19,6 @@ const BUSINESS_TABLES = Object.freeze([
   'software_releases',
   'catalog_listings',
   'trip_posts',
-  'chat_conversations',
-  'chat_messages',
 ]);
 
 const BUSINESS_TABLE_COLUMNS = Object.freeze({
@@ -65,14 +63,6 @@ const BUSINESS_TABLE_COLUMNS = Object.freeze({
   trip_posts: [
     'trip_id', 'author_tuyu_id', 'title', 'content', 'media_keys_json', 'idempotency_key',
     'status', 'created_at', 'updated_at',
-  ],
-  chat_conversations: [
-    'conversation_id', 'participant_a', 'participant_b', 'next_sequence', 'created_at',
-    'updated_at',
-  ],
-  chat_messages: [
-    'message_id', 'conversation_id', 'sender_tuyu_id', 'sequence', 'content',
-    'idempotency_key', 'created_at',
   ],
 });
 

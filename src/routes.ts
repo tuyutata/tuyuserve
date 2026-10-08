@@ -1,6 +1,5 @@
 import { createLoginChallenge, createSession, logout } from '../account/cloud/service';
 import { catalogListing, discoverListings, publishListing } from './catalog/service';
-import { conversations, createConversation, messages, sendMessage } from './chat/service';
 import {
   grantMerchantAdministrator,
   registerMerchantInstance,
@@ -61,20 +60,6 @@ export async function route(request: Request, env: Env): Promise<Response> {
   }
   if (request.method === 'POST' && url.pathname === '/v1/trips') {
     return createTrip(request, env);
-  }
-  if (request.method === 'GET' && url.pathname === '/v1/chat/conversations') {
-    return conversations(request, env);
-  }
-  if (request.method === 'POST' && url.pathname === '/v1/chat/conversations') {
-    return createConversation(request, env);
-  }
-  const messagesMatch = /^\/v1\/chat\/conversations\/(tcc_[0-9a-f]{32})\/messages$/u
-    .exec(url.pathname);
-  if (messagesMatch && request.method === 'GET') {
-    return messages(request, env, messagesMatch[1]);
-  }
-  if (messagesMatch && request.method === 'POST') {
-    return sendMessage(request, env, messagesMatch[1]);
   }
   if (request.method === 'GET' && url.pathname === '/v1/health') {
     return jsonResponse({ ok: true, service: 'tuyuserve' });

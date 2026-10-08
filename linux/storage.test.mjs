@@ -92,26 +92,6 @@ test('Linux 使用真实 PostgreSQL 承载业务表、KV 和对象元数据', {
     assert.deepEqual(Buffer.from(object.body), Buffer.from('signed'));
     assert.deepEqual(object.customMetadata, { purpose: 'fixture' });
 
-    await storage.DB.prepare(
-      'INSERT INTO users (tuyu_id, status, created_at, updated_at) VALUES (?, ?, ?, ?)',
-    ).bind('TUYU-A', 'active', 1, 1).run();
-    await storage.DB.prepare(
-      'INSERT INTO users (tuyu_id, status, created_at, updated_at) VALUES (?, ?, ?, ?)',
-    ).bind('TUYU-Z', 'active', 1, 1).run();
-    await storage.DB.prepare(
-      `INSERT INTO chat_conversations
-       (conversation_id, participant_a, participant_b, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?)`,
-    ).bind('TCC-TEST', 'TUYU-A', 'TUYU-Z', 1, 1).run();
-    const allocations = await Promise.all(Array.from({ length: 24 }, () =>
-      storage.DB.prepare(
-        `UPDATE chat_conversations SET next_sequence = next_sequence + 1
-         WHERE conversation_id = ? RETURNING next_sequence`,
-      ).bind('TCC-TEST').first()));
-    assert.deepEqual(
-      allocations.map((row) => row.next_sequence).sort((left, right) => left - right),
-      Array.from({ length: 24 }, (_, index) => index + 1),
-    );
     await assert.rejects(
       storage.DB.prepare('SELECT 9223372036854775807::bigint AS value').first(),
       /超出安全整数范围/u,
