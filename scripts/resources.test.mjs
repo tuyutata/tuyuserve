@@ -128,7 +128,7 @@ async function sourceFixture(t, behavior = {}) {
       : { path: join(root, 'verified', tool.id, 'bin', tool.command), version: tool.version },
     apple: async () => ({ developerDirectory, version: '27.0',
       tools: Object.fromEntries(['clang', 'clang++', 'ar', 'make', 'ld', 'as', 'nm', 'ranlib', 'strip', 'xcrun', 'otool', 'install_name_tool', 'codesign'].map(name => [name, join(developerDirectory, 'usr/bin', name)])) }),
-    prepare: async () => { await mkdir(join(pending, 'originals')); return new Map(); } };
+    prepare: async () => new Map() };
   return { input, calls, bytes };
 }
 test('源码工具使用准确Apple编译入口并只在候选中收集输出、原件和编译输入', async t => {
@@ -444,4 +444,20 @@ test('门禁最小Node宿主保留官方整包验真，错来源和改字节拒�
  await writeFile(join(object,'archive'),'replaced original');
  await assert.rejects(verifyGateNodeOriginal(object,{source:{...source,url:'https://example.test/node.tar.xz'},files:[]}),/来源/u);
  await assert.rejects(verifyGateNodeOriginal(object,{source,files:[]}),/原件/u);
+});
+
+// 二进制解码回执完整保留字节；静默模式只隔离日志，输出上限仍必须生效。
+test('二进制工具输出不进入日志，默认文本输出与静默上限仍准确',async t=>{
+ const root=await sandbox(t),entry=await realpath(new URL('./resources.mjs',import.meta.url).pathname);
+ const program=`import {runResourceProcess} from ${JSON.stringify('file://'+entry)};
+ const result=await runResourceProcess(process.execPath,['-e','process.stdout.write(Buffer.from([0,255,10]));process.stderr.write("diagnostic")'],{quietOutput:process.argv[1]==='quiet',encoding:'buffer'});
+ process.stdout.write(result.stdout);
+ if(result.stderr.toString()!=='diagnostic')process.exitCode=2;`;
+ const clean={...process.env};delete clean.NODE_TEST_CONTEXT;
+ for(const mode of ['quiet','default']){
+  const value=spawnSync(process.execPath,['--input-type=module','-e',program,mode],{cwd:root,env:clean});
+  assert.equal(value.status,0);assert.deepEqual(value.stdout,Buffer.from([0,255,10]));
+  assert.deepEqual(value.stderr,mode==='quiet'?Buffer.alloc(0):Buffer.concat([Buffer.from([0,255,10]),Buffer.from('diagnostic')]));
+ }
+ await assert.rejects(runResourceProcess(process.execPath,['-e','process.stdout.write("x".repeat(4096))'],{cwd:root,maxBuffer:64,quietOutput:true}),/输出超限/u);
 });

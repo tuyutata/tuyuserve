@@ -20,7 +20,7 @@ async function rm(path,options) {
  if(retainedResourcePath(path))throw Error('资源工具退出未确认，保留工作目录');
  return removeResourcePath(path,options);
 }
-export function runResourceProcess(command,args,{signal,maxBuffer=8*1024**2,timeout=3600000,encoding='utf8',...options}={}) {
+export function runResourceProcess(command,args,{signal,maxBuffer=8*1024**2,timeout=3600000,encoding='utf8',quietOutput=false,...options}={}) {
  signal?.throwIfAborted();
  if(!Number.isSafeInteger(maxBuffer)||maxBuffer<=0||!Number.isSafeInteger(timeout)||timeout<=0)throw Error('资源进程边界参数无效');
  return new Promise((ok,reject)=>{
@@ -64,7 +64,7 @@ export function runResourceProcess(command,args,{signal,maxBuffer=8*1024**2,time
   for(const [stream,parts]of [[child.stdout,output],[child.stderr,errors]])stream.on('data',chunk=>{
    if(done)return;bytes+=chunk.length;
    if(bytes>maxBuffer){requestStop(Error('资源进程输出超限'));return;}
-   parts.push(chunk);process.stderr.write(chunk);
+   parts.push(chunk);if(!quietOutput)process.stderr.write(chunk);
   });
   child.once('error',()=>{if(!child.pid){closed=true;finish(Error('资源工具无法启动'));}else requestStop(Error('资源工具进程错误'));});
   child.once('close',(code,termination)=>{
@@ -666,7 +666,6 @@ async function buildSourceTool({ library, tool, source, archive, pending, payloa
   if (hash(Buffer.from(buildSourceTool.toString())) !== hash(recipeBytes)) fail('编译期间工具交付配方发生变化');
   await writeFile(join(payload, 'recipe.source'), recipeBytes, { flag: 'wx', mode: 0o444 });
   await writeFile(join(payload, 'build.json'), JSON.stringify({ tool, xcode: selected.version, recipe: hash(recipeBytes), posix_sha256: library.tools.find(entry=>entry.id==='posix').archive.sha256 }), { flag: 'wx', mode: 0o444 });
-  await rm(join(pending, 'originals'), { recursive: true });
 }
 return {buildSourceTool,validateSourceTool};})();
 const flutterRecipe=(()=>{
