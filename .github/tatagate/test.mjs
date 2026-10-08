@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { gateContract, validateWorkflowSource, validateVectorGroup, validatePalletRegistry, readPublicChain } from './index.mjs';
@@ -85,7 +86,7 @@ test('保留源码不按每文件汉字数量判定，真实第一方临时注�
     GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null',
     GIT_AUTHOR_NAME: 'Fixture', GIT_AUTHOR_EMAIL: 'fixture@example.invalid',
     GIT_COMMITTER_NAME: 'Fixture', GIT_COMMITTER_EMAIL: 'fixture@example.invalid' };
-  const git = (...args) => execFileSync('/usr/bin/git', ['-C', root, ...args], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const git = (...args) => execFileSync(process.env.PRODUCT_GIT_BIN, ['-C', root, ...args], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
   try {
     git('init', '--quiet', '--initial-branch=main');
     mkdirSync(join(root, 'test'));
@@ -368,3 +369,29 @@ test('资源补丁字符串与真实临时注释按代码边界区分', async ()
   for (const text of ['// TODO real', '/* FIXME real */', 'const s=`${1 /* HACK real */}`;'])
     assert.equal(hasFirstPartyTemporaryComments('fixture.mjs', text), true);
 });
+
+// 检查实际入口的交付顺序，防止本机通过而远端遗漏同一资源阶段。
+test('本机和远端原门禁入口先取得本仓工具再运行全部检查', () => {
+ const source=readFileSync(new URL('./index.mjs',import.meta.url),'utf8');
+ const workflow=readFileSync(new URL('../workflows/tatagate.yml',import.meta.url),'utf8');
+ assert.ok(source.indexOf('await prepareGateResources(resourceWork,{signal:cancellation.signal})')<source.indexOf('return await repositoryGatePrepared(args)'));
+ assert.match(source,/Object\.assign\(process\.env,await verifyGateResourceDelivery\(receipt\)\)/u);
+ assert.match(workflow,/node \.github\/tatagate\/index\.mjs remote/u);
+ assert.doesNotMatch(workflow,/curl --fail|sha256sum -c/u);
+ assert.doesNotMatch(source,/execFileSync\('\/usr\/bin\/git'|execute\('bash'/u);
+});
+
+// 无效输入在资源阶段之前失败，不能触发联网或留下准备目录。
+test('原门禁拒绝错误提交和工作根后不进入资源取得',async()=>{
+ const {repositoryGateMain}=await import('./index.mjs');
+ const {resolve}=await import('node:path'),{readdirSync}=await import('node:fs');
+ const {fileURLToPath}=await import('node:url'),{testRoot}=await import('../../scripts/build.mjs');
+ const root=resolve(fileURLToPath(new URL('../..',import.meta.url))),directory=testRoot();
+ const before=readdirSync(directory).filter(name=>name.startsWith('tatagate-resources-')).sort();
+ await assert.rejects(repositoryGateMain(['local',root,'bad','b'.repeat(40),'relative']),/提交范围/u);
+ await assert.rejects(repositoryGateMain(['local',root,'a'.repeat(40),'b'.repeat(40),'relative']),/临时目录/u);
+ assert.deepEqual(readdirSync(directory).filter(name=>name.startsWith('tatagate-resources-')).sort(),before);
+});
+
+// 本仓门禁真实执行资源回归，不只核对存在或字符串。
+await import('../../scripts/resources.test.mjs');

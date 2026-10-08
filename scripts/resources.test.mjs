@@ -425,3 +425,23 @@ test('源码工具只分离两处有效镜像运输字段，真实编译输入�
   await assert.rejects(check(value,requested),/源码补丁输入证明无效/u);
  }
 });
+
+// 缺项、错来源、错误次序和入口别名均真实进入同一验真函数，不能获得工具回执。
+test('门禁工具来源和规范执行器失败即停止交付', async () => {
+ const {gateResourcePlan,gateToolInterfaces,verifyGateResourceDelivery}=await import('./resources.mjs');
+ const plan=gateResourcePlan();assert.equal(plan.sources.git.version,'2.54.0');
+ for(const change of [value=>delete value.sources.git,value=>value.sources.git.url='https://example.test/git.tar.xz',
+  value=>value.sources.bash.upstream_patches.reverse(),value=>value.sources.actionlint.sha256='invalid']) {
+  const value=structuredClone(plan);change(value);assert.throws(()=>gateToolInterfaces.validateToolSources(value));
+ }
+ for(const value of [undefined,'relative','/tmp/../bin/git'])assert.throws(()=>gateToolInterfaces.exactExecutable(value));
+ await assert.rejects(verifyGateResourceDelivery({product_id:'foreign',host:'linux',work:'/tmp'}),/身份/u);
+ assert.throws(()=>gateToolInterfaces.toolEnvironment({}),/入口/u);
+});
+test('门禁最小Node宿主保留官方整包验真，错来源和改字节拒绝',async t=>{
+ const {gateNodeSource,verifyGateNodeOriginal}=await import('./resources.mjs');
+ const source=gateNodeSource(),object=await sandbox(t);assert.equal(source.version,'25.2.1');
+ await writeFile(join(object,'archive'),'replaced original');
+ await assert.rejects(verifyGateNodeOriginal(object,{source:{...source,url:'https://example.test/node.tar.xz'},files:[]}),/来源/u);
+ await assert.rejects(verifyGateNodeOriginal(object,{source,files:[]}),/原件/u);
+});

@@ -1,12 +1,13 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
-  existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync,
+  existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, mkdtempSync,
 } from 'node:fs';
 import { basename, dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Readable } from 'node:stream';
 import { spec } from 'node:test/reporters';
+import {gateToolInterfaces,prepareGateResources,verifyGateResourceDelivery,disposeGateResources} from '../../scripts/resources.mjs';
 
 const emptyTreeSHA = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 const commitPattern = /^[0-9a-f]{40}$/u;
@@ -31,9 +32,9 @@ function exactKeys(value, expected, label) {
 
 function git(root, arguments_) {
   try {
-    return execFileSync('/usr/bin/git', ['-C', root, ...arguments_], {
+    return execFileSync(gateToolInterfaces.exactExecutable(process.env.PRODUCT_GIT_BIN), ['-c','credential.helper=','-c','core.hooksPath=/dev/null','-C', root, ...arguments_], {
       encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
-      env: { HOME: process.env.HOME, PATH: '/usr/bin:/bin:/usr/sbin:/sbin', LANG: 'C', LC_ALL: 'C' },
+      env: gateToolInterfaces.toolEnvironment(process.env),
     });
   } catch {
     fail('产品门禁读取Git提交失败');
@@ -272,7 +273,7 @@ function validateSyntax(root, execute, environment, repository) {
     const absolute = resolve(root, path);
     let result = null;
     if (path.endsWith('.mjs')) result = execute(process.execPath, ['--check', absolute], { cwd: root, env: environment, stdio: 'inherit' });
-    else if (path.endsWith('.sh')) result = execute('bash', ['-n', absolute], { cwd: root, env: environment, stdio: 'inherit' });
+    else if (path.endsWith('.sh')) result = execute(environment.PRODUCT_BASH_BIN, ['-n', absolute], { cwd: root, env: environment, stdio: 'inherit' });
     else if (path.endsWith('.json')) {
       try { JSON.parse(readFileSync(absolute, 'utf8')); } catch { fail('JSON语法无效：' + path); }
     }
@@ -667,7 +668,7 @@ function environment(root, work) {
   const names=['HOME','USER','LOGNAME','LANG','LC_ALL','PATH','RUSTUP_HOME','RUSTUP_TOOLCHAIN',
     'GITHUB_ACTIONS','GITHUB_WORKSPACE','GITHUB_SHA','GITHUB_EVENT_NAME','GITHUB_REF',
     'GITHUB_WORKFLOW','GITHUB_JOB','GITHUB_REPOSITORY','RUNNER_TOOL_CACHE','RUNNER_TEMP',
-    'GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','PRODUCT_GIT_BIN'];
+    'PRODUCT_GIT_BIN','PRODUCT_BASH_BIN','PRODUCT_GREP_BIN','PRODUCT_SED_BIN','PRODUCT_NODE_BIN','GIT_CONFIG_NOSYSTEM','GIT_CONFIG_GLOBAL','GIT_TERMINAL_PROMPT','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','PRODUCT_GIT_BIN'];
   const result=Object.fromEntries(names.filter(name=>typeof process.env[name]==='string').map(name=>[name,process.env[name]]));
   Object.assign(result,{ TMPDIR:resolve(work,'tmp'),CARGO_HOME:resolve(work,'cargo-home'),
     CARGO_TARGET_DIR:resolve(work,'cargo'),CARGO_INCREMENTAL:'0' });
@@ -733,6 +734,45 @@ export async function executeGate({ root, baseSHA, headSHA, work, actionlint, ca
 }
 
 export async function repositoryGateMain(args) {
+  const [mode, root, baseSHA, headSHA, work] = args;
+  if((mode==='local'&&args.length===5)||(mode==='remote'&&args.length===1)) {
+    const ownRoot=resolve(gateDirectory,'../..');
+    const expected=mode==='local'?root:process.env.GITHUB_WORKSPACE;
+    if(expected!==ownRoot||realpathSync(expected)!==expected)fail('门禁资源只消费当前所属检出');
+    if(mode==='local') {
+      if(!commitPattern.test(baseSHA)||!commitPattern.test(headSHA)||baseSHA===headSHA)fail('门禁提交范围无效');
+      if(!isAbsolute(String(work||''))||realpathSync(work)!==work||!lstatSync(work).isDirectory()
+        ||lstatSync(work).isSymbolicLink()||work===root||work.startsWith(root+'/')
+        ||root.startsWith(work+'/')||readdirSync(work).length)fail('门禁独占临时目录边界无效');
+    } else {
+      const event=JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH,'utf8'));
+      const owner=contract.repository==='citizenwallet'?'crcfrcn':'tuyutata';
+      if(process.env.GITHUB_ACTIONS!=='true'||process.env.GITHUB_REPOSITORY!==owner+'/'+contract.repository
+        ||process.env.GITHUB_EVENT_NAME!=='push'||process.env.GITHUB_REF!=='refs/heads/main'
+        ||process.env.GITHUB_WORKFLOW!=='tatagate'||process.env.GITHUB_JOB!=='gate'
+        ||event.ref!=='refs/heads/main'||event.after!==process.env.GITHUB_SHA
+        ||!commitPattern.test(event.after)||event.repository?.name!==contract.repository||event.deleted)fail('门禁资源远端身份无效');
+    }
+    const owner=await import(pathToFileURL(resolve(ownRoot,'scripts/build.mjs')));
+    const resourceWork=mkdtempSync(resolve(owner.testRoot(),'tatagate-resources-'));
+    const saved=Object.fromEntries(['PRODUCT_GIT_BIN','PRODUCT_BASH_BIN','PRODUCT_GREP_BIN','PRODUCT_SED_BIN','PRODUCT_NODE_BIN','TATAGATE_ACTIONLINT','PATH'].map(key=>[key,process.env[key]]));
+    const cancellation=new AbortController(),cancel=()=>cancellation.abort();
+    for(const name of ['SIGTERM','SIGINT'])process.once(name,cancel);
+    let receipt;
+    try {
+      receipt=await prepareGateResources(resourceWork,{signal:cancellation.signal});
+      Object.assign(process.env,await verifyGateResourceDelivery(receipt));
+      return await repositoryGatePrepared(args);
+    } finally {
+      for(const name of ['SIGTERM','SIGINT'])process.removeListener(name,cancel);
+      for(const [key,value]of Object.entries(saved)){if(value===undefined)delete process.env[key];else process.env[key]=value;}
+      if(receipt)await disposeGateResources(receipt);
+    }
+  }
+  return repositoryGatePrepared(args);
+}
+
+async function repositoryGatePrepared(args) {
   const [mode, root, baseSHA, headSHA, work] = args;
   if (mode === 'physical' && args.length === 2) {
     if (realpathSync(root) !== root) fail('本仓物理根必须真实');
