@@ -16,8 +16,10 @@ for (const file of ['package.json', 'package-lock.json']) {
 }
 const actual = realpathSync(output.slice(0, output.lastIndexOf('/')));
 const declared = JSON.parse(readFileSync(join(root, 'scripts/flows.json'), 'utf8'));
-const target = join(root, 'target', ...(Object.keys(declared.platforms).length === 1 ? [] : [platform]));
+if (!Object.hasOwn(declared.platforms, platform)) throw Error('Build平台未声明');
+const target = join(root, 'target');
 const difference = relative(target, actual);
+if (!['build', 'test'].includes(difference.split(sep)[0])) throw Error('Build输出只允许build或test现场');
 if (actual !== output.slice(0, output.lastIndexOf('/')) || isAbsolute(difference) || difference === '..' || difference.startsWith('..' + sep)) throw Error('Build输出必须归本产品平台target');
 VERIFY_BUILD_INPUT
 cd "$project"
