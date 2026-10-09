@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import {withFixedWork} from '../../../target.mjs';
+import {remoteStep,fixedWork} from '../../../target.mjs';
 import { remoteEnvironment as productRemoteEnvironment } from '../../../build.mjs';
 if(process.env.GITHUB_ACTIONS==='true'&&String(process.env.GITHUB_WORKFLOW||'').startsWith('tuyuserve.'))Object.assign(process.env,productRemoteEnvironment());
 import { spawnSync as runExactProcess } from 'node:child_process';
@@ -175,14 +177,7 @@ export function cachePathPlan(identity, runnerTemp, entries) {
       throw new Error(`缓存相对路径无效：${name}`);
     }
   }
-  const digest = createHash('sha256').update(identity.baseKey).digest('hex').slice(0, 20);
-  const rootName = `${identity.product}-${identity.platform}-${identity.component}-${digest}`;
-  const root = pathApi.resolve(temp, 'ci-cache', rootName);
-  const expectedParent = pathApi.resolve(temp, 'ci-cache');
-  const relative = pathApi.relative(expectedParent, root);
-  if (!relative || relative.startsWith('..') || pathApi.isAbsolute(relative)) {
-    throw new Error('缓存根目录逃出Runner临时目录');
-  }
+  const root = pathApi.resolve(temp, 'cache');
   return Object.freeze({
     root,
     successPaths: names.map((name) => pathApi.join(root, ...name.split('/'))),
@@ -222,7 +217,7 @@ export function wireCacheLinks(identity, runnerTemp, entries, workspace, links) 
     const cacheRelative = row.slice(separator + 1);
     relativeEntries(sourceRelative, '工作区生成目录');
     relativeEntries(cacheRelative, '受控缓存目录');
-    const source = resolvedChild(pathApi, workspaceRoot, sourceRelative, '工作区生成目录');
+    const source = resolvedChild(pathApi, pathApi.resolve(runnerTemp,'source'), sourceRelative, '工作区生成目录');
     const target = resolvedChild(pathApi, plan.root, cacheRelative, '受控缓存目录');
     mkdirSync(pathApi.dirname(source), { recursive: true });
     mkdirSync(target, { recursive: true });
@@ -512,7 +507,8 @@ const workflowSteps = Object.freeze({
 });
 function runExactWorkflowStep(index){requireExactRemoteJobEnvironment();if(!/^(?:0|[1-9][0-9]*)$/.test(String(index||''))||!Object.hasOwn(workflowSteps,String(index)))throw new Error('准确远端Job阶段无效');const step=workflowSteps[String(index)];const command=step.shell==='pwsh'?'pwsh':(process.platform==='win32'?'bash':'/bin/bash');const args=step.shell==='pwsh'?['-NoLogo','-NoProfile','-NonInteractive','-Command',step.source]:['--noprofile','--norc','-e','-o','pipefail','-c',step.source];const result=runExactProcess(command,args,{cwd:process.cwd(),env:process.env,stdio:'inherit'});if(result.error)throw new Error('准确远端Job阶段无法启动');if(result.status!==0)process.exitCode=Number.isInteger(result.status)?result.status:1;}
 
-async function main() {
+async function main(){return withFixedWork('build',()=>mainTask(),{retain:process.env.GITHUB_ACTIONS==='true'});}
+async function mainTask() {
   const command = process.argv[2];
   if (command === 'workflow-step') return runExactWorkflowStep(process.argv[3]);
   if (command === 'prepare') return prepare(process.env);

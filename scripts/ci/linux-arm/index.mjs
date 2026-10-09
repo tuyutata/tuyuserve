@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import {withFixedWorkSync,claimFixedWork,releaseFixedWork} from '../../target.mjs';
+import {fixedScratch} from '../../target.mjs';
 // CI_BUILD: incremental
 
 import { execFileSync, spawn } from 'node:child_process';
@@ -124,7 +126,7 @@ async function smoke(artifact, root) {
   }
 }
 
-const work = mkdtempSync(join(tmpdir(), 'tuyuserve-ci-'));
+const workSession=claimFixedWork('build',{retain:process.env.GITHUB_ACTIONS==='true'}),work=workSession.owner.work;
 try {
   verifyArm64();
   run('npm', ['ci'], 'tuyuserve');
@@ -142,5 +144,5 @@ try {
   console.error(`途遇服务端 Linux ARM64 CI 失败：${error.message}`);
   process.exitCode = 1;
 } finally {
-  rmSync(work, { recursive: true, force: true });
+  releaseFixedWork(workSession);
 }
