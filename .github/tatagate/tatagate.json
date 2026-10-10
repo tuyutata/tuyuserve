@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "repository": "tuyuserve",
+  "github_repository": "tuyutata/tuyuserve",
+  "workflows": [
+    "release-cloudflare.yml"
+  ],
+  "checks": [
+    "repository-contracts",
+    "flow-isolation",
+    "syntax"
+  ]
+}
