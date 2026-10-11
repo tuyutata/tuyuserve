@@ -440,3 +440,7 @@ Pod由pods中的name、version、checksum匹配当前Podfile.lock；spec保存�
 本仓 GitHub 门禁接受 actions/checkout 的准确 HTTPS origin（同一仓库地址有或没有 `.git` 后缀），仓库、事件、提交和工作流身份仍逐项校验。
 
 门禁清理接口只对 URL 的路径部分拒绝越界，允许 created 查询中的时间范围分隔符；同文件回归直接执行正式 HTTP 参数校验，覆盖时间范围和越界拒绝。
+
+## 配置需求公开接口
+
+本仓 `scripts/config.mjs` 使用真实 Cloudflare 导出入口的准确名称：必需的 `CLOUDFLARE_ACCOUNT_ID` 与可显式覆盖默认桶的 `TUYUSERVE_R2_BUCKET`。旧 `ACCOUNT_ID`、`BUCKET` 别名及未被现行流程消费的 `DATABASE_ID`、`KV_ID`、`SERVER_DEPLOY` 不再作为配置要求；控制台仅保管当前声明值。
