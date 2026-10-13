@@ -241,9 +241,9 @@ TuyuFactory 今后只发布厂家和商品公开摘要。途遇商家端中的�
 本机数据库和角色。卸载会停止并删除两个 systemd unit 和程序目录，但保留 PostgreSQL、对象、
 备份和配置。当前安装包只锁定 PostgreSQL 17.11，不在安装时隐式执行数据库大版本升级。
 
-Cloudflare Release 继续使用 `tuyuserve-cloudflare-v<software_version>`，生产发布仍只由本机
+Cloudflare Release 使用 `tuyuserve-cloudflare-v<software_version>-r<run_id>-a<attempt>`，生产发布仍只由本机
 外部调用方 验真正式 Release 后执行。LinuxARM Release 使用
-`tuyuserve-linux-arm-v<software_version>`，主资产固定为
+`tuyuserve-linux-arm-v<software_version>-r<run_id>-a<attempt>`，主资产固定为
 `tuyuserve-linux-arm64.tar.gz`；它只固化可安装包，不代表已经部署到任何自建服务器。
 
 同时发布 `release-manifest.json` 和 `SHA256SUMS`。
@@ -410,30 +410,9 @@ Pod由pods中的name、version、checksum匹配当前Podfile.lock；spec保存�
 
 ## GitHub自动化
 
-本仓自动化只在GitHub的main源码上执行；控制台只调用与展示。各目标独立拥有同名的YAML与Node实现，不调用其他仓或其他目标的Workflow。版本、构建、测试、签名、完整产物核验与正式tag/Release均由本仓负责。
+Cloudflare 使用 `.github/workflows/cloudflare.yml` 在 Xcode 27 ARM64 Runner 调用 `scripts/build.mjs`；Linux ARM64 使用 `.github/workflows/linuxarm.yml` 在真实 Ubuntu ARM64 Runner 调用同一公开 Build 入口，并由现有 `linux/build.mjs` 生成完整安装包。两个平台独立运行、独立版本与 Tag，分别生成 `tuyuserve-cloudflare.tgz` 和 `tuyuserve-linux-arm64.tar.gz`，各自附 `release-manifest.json`、`SHA256SUMS`。`scripts/publish.mjs` 只读验真 GitHub Release；生产部署未接通。
 
-- `.github/workflows/release-cloudflare.yml`及同名`.mjs`。
-
-每个目标的最后任务使用always读取所有前置结果：全部成功清本仓本目标旧成功，否则清旧失败并失败退出。仅保留最新成功、最新失败各一条；保护本次Run和所有活动任务，另一类结果与其他目标不受影响。删除关联正式Release、tag、Actions产物和Run后回查；任何清理错误都按实际失败报告，不自动重试。
-
-当前自动化目标仅Cloudflare；未实现的Linux ARM自动化入口、声明及对应断言移除。
-
-所属回归位于各目标同名mjs，覆盖前置结果、版本边界、平台隔离、活动保护和完整分页；真实GitHub构建与发布验收依任务授权另行执行。
-
-调度方按本仓supplyRequirements和prepareToolSupply取得工具候选；调度模式的获取、提交及执行使用供给方交付的能力；产品配方自行清理自己的临时生成物。缓存复用消费实际路径，运行Node版本/字节、Apple资源签名及工具全树复验不作为本机编译门禁；上游锁与正式应用签名、安装回读继续由各自真实流程执行。
-
-本机编译现场由本产品领取和收尾。调度任务编号随本产品领取记录保存；本轮结果消费后，只允许匹配该编号的收尾请求。产品确认自身进程及资源供给后代全部退出后才清场；异常、编号不符或退出未确认时保留现场。控制台只持有调度锁、调用本产品入口并供给资源，不实现产品清理。
-
-软件版本计算使用本目标GitHub运行序号作为单调下界，并与本仓已成功版本比较；失败或历史清理不使版本返回源码初值。版本只在GitHub本次运行内产生，同一Run重试保持运行序号，Tag另绑定准确attempt。
-
-### 当前自动化最后处理
-
-本仓每个自动化目标仅由自身release-<平台>.yml与同名mjs执行，最后处理依赖全部前置任务。清理只接受该目标准确Workflow路径、main和手动事件，不根据已删除文件或旧入口名称猜测归属。前置失败时，本次产物撤销与旧失败清理分别尝试并汇总错误；任何一项未确认均失败。固定依赖仍由本仓声明和原锁管理，不参加自产历史结果分类。
-
-### 本仓 GitHub 自动化与塔塔门禁目录
-
-本仓 .github/ 仅保留 workflows/ 与 tatagate/。Workflow 自行执行产品自动化，tatagate.json 与 tatagate.mjs 只登记并只读核对本仓静态合同；产品测试由 Build 或对应 Workflow 执行。
-
+Workflow 只接受 main 的手动派发，核对源码 SHA 与运行身份；编译、组包、草稿 Release 资产回读成功后才确认正式 Release。失败仅清理本次创建的 Release/Tag，不触碰其他平台的运行。当前未执行真实 GitHub 构建或发布验收。
 
 ## 塔塔鹿鹿与自动化
 
@@ -443,4 +422,8 @@ Pod由pods中的name、version、checksum匹配当前Podfile.lock；spec保存�
 
 本仓 `scripts/config.mjs` 使用真实 Cloudflare 导出入口的准确名称：必需的 `CLOUDFLARE_ACCOUNT_ID` 与可显式覆盖默认桶的 `TUYUSERVE_R2_BUCKET`。旧 `ACCOUNT_ID`、`BUCKET` 别名及未被现行流程消费的 `DATABASE_ID`、`KV_ID`、`SERVER_DEPLOY` 不再作为配置要求；控制台仅保管当前声明值。
 
-编译入口在同一次任务中先执行本仓 `scripts/build.mjs` 声明的适用代码回归，全部通过后才执行所选平台构建；测试失败、取消或测试文件在阶段间变化均禁止生成正式编译产物。测试清单与所需工具只由本仓 Build 接口声明，控制台不再提供独立测试按钮或从发布接口读取测试清单。
+编译入口在同一次任务中由本仓完整 Build 先取得资源回执、运行适用代码回归，全部通过后才执行所选平台正式编译；测试失败或取消均禁止生成正式编译产物。测试清单与所需工具只归本仓 Build，控制台仅调用完整入口并按本仓声明供给资源。
+
+## 产品自有编译前测试
+
+完整 Build 由本产品在首次资源回执后运行自己登记的 Node 回归，成功后才进入工程准备和正式编译。测试所需 Node 及其它资源按本仓平台声明验真：独立执行由本产品准备，控制台调度仅按本仓声明供给并调用完整 Build，不选择测试文件或限定测试工具。测试夹具的固定根映射到本仓 `target/test/sessions/<本轮随机会话>/`，子进程继承会话身份；退出时由本产品核对守卫和工具进程后仅清理该会话。正式 `target/build/<平台>` 的领取与收尾规则保持。合成阶段注入只在本仓测试上下文有效，正式完整 Build 必须先运行本仓测试。

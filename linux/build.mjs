@@ -132,10 +132,14 @@ await cp(resolve('linux/server.mjs'), join(stage, 'lib', 'server.mjs'));
 await cp(resolve('linux/import.mjs'), join(stage, 'lib', 'import.mjs'));
 await cp(resolve('schema.sql'), join(stage, 'share', 'schema.sql'));
 const packageDocument = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
+const releaseVersion = process.env.TUYUSERVE_RELEASE_VERSION || packageDocument.version;
+if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/u.test(releaseVersion)) {
+  throw new Error('LinuxARM 正式版本无效');
+}
 await writeFile(join(stage, 'share', 'release.json'), `${JSON.stringify({
   product_id: 'tuyuserve',
   platform: 'linux-arm64',
-  software_version: packageDocument.version,
+  software_version: releaseVersion,
   postgresql_version: runtimeLock.version,
 }, null, 2)}\n`, { mode: 0o644 });
 await cp(resolve('linux/install.sh'), join(stage, 'install.sh'));
