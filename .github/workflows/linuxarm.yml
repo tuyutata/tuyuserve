@@ -1,4 +1,5 @@
 name: tuyuserve.linux-arm
+run-name: tuyuserve.linux-arm·${{ github.run_number }}
 'on':
   workflow_dispatch: {}
 concurrency:

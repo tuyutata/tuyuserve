@@ -1,4 +1,5 @@
 name: tuyuserve.cloudflare
+run-name: tuyuserve.cloudflare·${{ github.run_number }}
 'on':
   workflow_dispatch: {}
 concurrency:
