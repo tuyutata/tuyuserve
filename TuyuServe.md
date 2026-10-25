@@ -165,7 +165,7 @@ cd <本仓根>
 CLOUDFLARE_API_TOKEN=... \
 CLOUDFLARE_ACCOUNT=... \
 TUYUSERVE_KV_NAMESPACE_ID=... \
-TUYUSERVE_R2_BUCKET=tuyubooking \
+TUYUSERVE_BUCKET=tuyubooking \
 TUYUSERVE_WRITES_FROZEN=confirmed \
 npm run export:cloudflare -- /安全目录/tuyuserve-cloudflare.tar.gz
 ```
@@ -420,7 +420,7 @@ Workflow 只接受 main 的手动派发，核对源码 SHA 与运行身份；编
 
 ## 配置需求公开接口
 
-本仓 `scripts/config.mjs` 使用真实 Cloudflare 导出入口的准确名称：必需的 `CLOUDFLARE_ACCOUNT` 与可显式覆盖默认桶的 `TUYUSERVE_R2_BUCKET`。控制台仅保管现行导出流程真正消费的声明值。
+本仓 `scripts/config.mjs` 使用真实 Cloudflare 导出入口的准确名称：必需的 `CLOUDFLARE_ACCOUNT` 与可显式覆盖默认桶的 `TUYUSERVE_BUCKET`。控制台仅保管现行导出流程真正消费的声明值。
 
 编译入口在同一次任务中由本仓完整 Build 先取得资源回执、运行适用代码回归，全部通过后才执行所选平台正式编译；测试失败或取消均禁止生成正式编译产物。测试清单与所需工具只归本仓 Build，外部调用同一本仓完整入口，资源由本产品自己准备。
 
@@ -445,3 +445,5 @@ GitHub接口使用普通参数和已授权令牌，返回本仓既有版本计�
 本产品scripts/config.mjs的describeAction仅返回repository、workflow、ref、inputs，或既有本地进程命令声明；不导入构建实现、不派发GitHub请求、不处理令牌、版本或历史。控制台使用统一数据接口直接派发并只读观察准确Run；产品GitHub业务归所属既有YAML。本次自动化Run名称使用运行编号，正式构建及产物保持版本名称。已有工具和依赖复用，缺少时才按原声明准备。
 
 Cloudflare账户配置和导出入口唯一接纳CLOUDFLARE_ACCOUNT；调用Wrangler时映射至官方CLOUDFLARE_ACCOUNT_ID环境变量，不读取旧产品配置别名。
+
+本产品配置项统一为name、description、accessLevel、kind、format五个必填字段；不适用规则明确填写“不适用”。name严格使用两组大写字母和一个下划线，同名共用控制台唯一值，当前页仅汇总实际声明的使用产品。操作列固定写入/更换、查看、删除；保密查看保留生物识别。现有配置消费者随声明同步改名，官方工具/API字段保持官方名称，不新增旧名兼容或配置副本。

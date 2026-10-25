@@ -8,26 +8,18 @@ export const manifest=Object.freeze({
     "title": "服务端配置",
     "items": [
       {
-        "environment": "tuyuserve",
         "name": "CLOUDFLARE_ACCOUNT",
-        "title": "CLOUDFLARE_ACCOUNT",
         "description": "Cloudflare账户编号",
-        "revealable": true,
         "accessLevel": "public",
-        "kind": "runtime",
-        "format": "hex16",
-        "required": true
+        "kind": "deployment",
+        "format": "hex16"
       },
       {
-        "environment": "tuyuserve",
-        "name": "TUYUSERVE_R2_BUCKET",
-        "title": "TUYUSERVE_R2_BUCKET",
+        "name": "TUYUSERVE_BUCKET",
         "description": "Cloudflare导出使用的R2桶名",
-        "revealable": true,
         "accessLevel": "public",
         "kind": "runtime",
-        "format": "r2_bucket",
-        "required": false
+        "format": "r2_bucket"
       }
     ]
   }

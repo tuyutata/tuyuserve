@@ -179,7 +179,7 @@ if (process.env.TUYUSERVE_WRITES_FROZEN !== 'confirmed') {
 }
 const accountId = required('CLOUDFLARE_ACCOUNT');
 const namespaceId = required('TUYUSERVE_KV_NAMESPACE_ID');
-const bucket = process.env.TUYUSERVE_R2_BUCKET ?? 'tuyubooking';
+const bucket = process.env.TUYUSERVE_BUCKET ?? 'tuyubooking';
 await mkdir(dirname(output), { recursive: true, mode: 0o700 });
 try {
   await lstat(output);
