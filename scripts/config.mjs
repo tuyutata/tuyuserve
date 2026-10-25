@@ -9,8 +9,8 @@ export const manifest=Object.freeze({
     "items": [
       {
         "environment": "tuyuserve",
-        "name": "CLOUDFLARE_ACCOUNT_ID",
-        "title": "CLOUDFLARE_ACCOUNT_ID",
+        "name": "CLOUDFLARE_ACCOUNT",
+        "title": "CLOUDFLARE_ACCOUNT",
         "description": "Cloudflare账户编号",
         "revealable": true,
         "accessLevel": "public",

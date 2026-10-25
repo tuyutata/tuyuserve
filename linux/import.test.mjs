@@ -182,3 +182,15 @@ test('Cloudflare 导出器未确认停止写入时失败关闭', () => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /必须停止途遇服务端写入/u);
 });
+
+test('Cloudflare 导出与配置声明只接纳统一账户名称', async () => {
+  const {describeConfiguration}=await import('../scripts/config.mjs');
+  const rows=describeConfiguration().configuration.items;
+  assert.equal(rows.filter(row=>row.name==='CLOUDFLARE_ACCOUNT').length,1);
+  const entry=new URL('./cloudflare-export.mjs',import.meta.url).pathname;
+  const environment={TUYUSERVE_WRITES_FROZEN:'confirmed',CLOUDFLARE_ACCOUNT:'',TUYUSERVE_KV_NAMESPACE_ID:''};
+  for(const [account,message] of [['','缺少 CLOUDFLARE_ACCOUNT'],['1'.repeat(32),'缺少 TUYUSERVE_KV_NAMESPACE_ID']]) {
+    const result=spawnSync(process.execPath,[entry,'/tmp/tuyuserve-config-fixture.tar.gz'],{encoding:'utf8',env:{...environment,CLOUDFLARE_ACCOUNT:account}});
+    assert.notEqual(result.status,0);assert.ok(result.stderr.includes(message));
+  }
+});

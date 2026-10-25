@@ -60,7 +60,7 @@ function d1Rows(sql) {
       cwd: resolve('.'),
       encoding: 'utf8',
       maxBuffer: 32 * 1024 * 1024,
-      env: { ...process.env, WRANGLER_SEND_METRICS: 'false' },
+      env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: accountId, WRANGLER_SEND_METRICS: 'false' },
     },
   );
   if (result.status !== 0) throw new Error(`Cloudflare D1 导出失败: ${result.stderr}`);
@@ -177,7 +177,7 @@ if (!process.argv[2] || !output.endsWith('.tar.gz')) {
 if (process.env.TUYUSERVE_WRITES_FROZEN !== 'confirmed') {
   throw new Error('导出前必须停止途遇服务端写入并设置 TUYUSERVE_WRITES_FROZEN=confirmed');
 }
-const accountId = required('CLOUDFLARE_ACCOUNT_ID');
+const accountId = required('CLOUDFLARE_ACCOUNT');
 const namespaceId = required('TUYUSERVE_KV_NAMESPACE_ID');
 const bucket = process.env.TUYUSERVE_R2_BUCKET ?? 'tuyubooking';
 await mkdir(dirname(output), { recursive: true, mode: 0o700 });
