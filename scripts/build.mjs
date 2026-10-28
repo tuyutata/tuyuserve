@@ -439,7 +439,7 @@ async function runProductTests(platform,work,receipt,base){
   ||!isAbsolute(node.path)||realpathSync(node.path)!==node.path)throw Error('本仓测试缺少准确Node入口');
  // Node测试运行器自行设置测试子进程身份；预设NODE_TEST_CONTEXT会让它跳过全部文件。
  const testEnvironment={HOME:work,USER:base.USER,LOGNAME:base.LOGNAME,LANG:'C',LC_ALL:'C',PATH:env.PATH,
-  PRODUCT_GIT_BIN:env.GIT};
+  PRODUCT_GIT_BIN:env.GIT,PRODUCT_SHELL_BIN:receipt.tools.bash?.path};
  const files=testFiles().map(file=>join(root,file));
  for(const file of files){const info=lstatSync(file);if(!info.isFile()||info.isSymbolicLink()||realpathSync(file)!==file)throw Error('本仓测试文件无效');}
  const digests=files.map(file=>createHash('sha256').update(readFileSync(file)).digest('hex'));
@@ -673,7 +673,7 @@ test('Cloudflare拥有本仓编译命令，拒绝空输出、旧输出和编译�
  for(const file of ['package.json','package-lock.json'])copyFileSync(join(root,file),join(project,file));
  const cli=join(project,'node_modules/wrangler/bin/wrangler.js');
  writeFileSync(cli,"const{writeFileSync}=require('node:fs');const{join}=require('node:path');const args=process.argv.slice(2);if(args[0]!=='deploy'||!args.includes('--dry-run')||args[args.indexOf('--config')+1]!=='wrangler.toml')process.exit(31);if(process.env.TOOL_STATUS==='23')process.exit(23);if(process.env.TOOL_STATUS!=='empty')writeFileSync(join(args[args.indexOf('--outdir')+1],'index.js'),'export default {}');");
- const invoke=(status,name)=>spawnSync(shell,[entry,'cloudflare',project,join(work,name)],{encoding:'utf8',env:{...process.env,NODE:process.execPath,NPM_CLI:cli,TOOL_STATUS:status}});
+ const invoke=(status,name)=>spawnSync(shell,['--noprofile','--norc','-c',entry,'product-build','cloudflare',project,join(work,name)],{encoding:'utf8',env:{...process.env,PRODUCT_BUILD_ROOT:resolve(root),NODE:process.execPath,NPM_CLI:cli,TOOL_STATUS:status}});
  const good=invoke('ok','good');assert.equal(good.status,0,good.stderr);assert.notEqual(invoke('ok','good').status,0);
  assert.equal(invoke('23','failed').status,23);assert.notEqual(invoke('empty','empty').status,0);
 });
@@ -2238,7 +2238,7 @@ test('第二个真实进程不能领取活跃固定根或清理前一任务',asy
  await withFixedWork('test',async work=>{
   fs.writeFileSync(join(work,'sentinel'),'owned');
   const module=join(import.meta.dirname,'build.mjs');
-  assert.throws(()=>execFileSync(process.execPath,['--input-type=module','-e','import {withFixedWork} from '+JSON.stringify(module)+'; await withFixedWork("test",()=>{});'],{env:{PATH:process.env.PATH},stdio:['ignore','pipe','pipe']}),/活跃任务/);
+  assert.throws(()=>execFileSync(process.execPath,['--input-type=module','-e','import {withFixedWork} from '+JSON.stringify(module)+'; await withFixedWork("test",()=>{});'],{env:{PATH:process.env.PATH,NODE_TEST_CONTEXT:process.env.NODE_TEST_CONTEXT,PRODUCT_TEST_SESSION:process.env.PRODUCT_TEST_SESSION},stdio:['ignore','pipe','pipe']}),/活跃任务/);
   assert.equal(fs.readFileSync(join(work,'sentinel'),'utf8'),'owned');
  });isEmpty();
 });
@@ -2263,7 +2263,7 @@ test('实际任务被强制终止后下一轮在同一固定根恢复并清场',
  const {spawn}=await import('node:child_process');
  const module=join(import.meta.dirname,'build.mjs');
  const code='import {withFixedWork} from '+JSON.stringify(module)+';import fs from "node:fs";await withFixedWork("test",async work=>{fs.writeFileSync(work+"/interrupted","partial");process.stdout.write("ready");await new Promise(()=>{setInterval(()=>{},1000);});});';
- const child=spawn(process.execPath,['--input-type=module','-e',code],{env:{PATH:process.env.PATH},stdio:['ignore','pipe','pipe']});
+ const child=spawn(process.execPath,['--input-type=module','-e',code],{env:{PATH:process.env.PATH,NODE_TEST_CONTEXT:process.env.NODE_TEST_CONTEXT,PRODUCT_TEST_SESSION:process.env.PRODUCT_TEST_SESSION},stdio:['ignore','pipe','pipe']});
  const finished=new Promise(resolve=>child.once('close',(code,signal)=>resolve({code,signal})));
  try{await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('任务领取超时')),5000);child.once('error',reject);child.stdout.once('data',()=>{clearTimeout(timer);resolve();});});child.kill('SIGKILL');assert.equal((await finished).signal,'SIGKILL');
   assert.equal(fs.readFileSync(join(fixedWork('test'),'interrupted'),'utf8'),'partial');
@@ -2276,6 +2276,7 @@ test('实际任务被强制终止后下一轮在同一固定根恢复并清场',
 // 本产品收尾拒绝异任务与仍存活的资源后代。
 if(process.env.NODE_TEST_CONTEXT&&process.argv.length===2&&process.argv[1]===import.meta.filename){
  const {test}=await import('node:test'),{default:assert}=await import('node:assert/strict'),{spawn}=await import('node:child_process');
+ const {default:fs}=await import('node:fs');
  test('收尾必须匹配本轮编号并等待资源后代退出',async()=>{
   const work=fixedWork('test');await withFixedWork('test',()=>withFixedWork('test',async()=>{fs.writeFileSync(join(work,'keep'),'owned');},{run_id:'owned-run'}),{retain:true});
   assert.throws(()=>finishFixedWork(work,{run_id:'other-run'}),/任务编号/);assert.equal(fs.readFileSync(join(work,'keep'),'utf8'),'owned');

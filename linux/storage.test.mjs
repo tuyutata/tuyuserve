@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { DatabaseSync } from 'node:sqlite';
 
-import { openStorage, objectFileName, postgresSql } from './storage.mjs';
+import { openStorage, objectFileName, postgresSql, createPostgresPool, BUSINESS_TABLE_COLUMNS } from './storage.mjs';
 
 const postgresBin = process.env.TUYUSERVE_TEST_POSTGRES_BIN;
 
@@ -60,16 +61,16 @@ test('Linux 使用真实 PostgreSQL 承载业务表、KV 和对象元数据', {
   });
   try {
     await storage.DB.prepare(
-      'INSERT INTO users (tuyu_id, status, created_at, updated_at) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users (tuyu_id, user_state, created_at, updated_at) VALUES (?, ?, ?, ?)',
     ).bind('TUYU-TEST', 'active', 1, 1).run();
     assert.equal(
       (await storage.DB.prepare('SELECT tuyu_id FROM users').first()).tuyu_id,
       'TUYU-TEST',
     );
-    await storage.SESSION_CACHE.put('session', JSON.stringify({ ok: true }), {
+    await storage.SESSION_CACHE.put('fixture', JSON.stringify({ ok: true }), {
       expirationTtl: 60,
     });
-    assert.deepEqual(await storage.SESSION_CACHE.get('session', 'json'), { ok: true });
+    assert.deepEqual(await storage.SESSION_CACHE.get('fixture', 'json'), { ok: true });
     const binary = Uint8Array.from([0, 255, 17]);
     await storage.SESSION_CACHE.put('binary', binary, { metadata: { kind: 'fixture' } });
     assert.deepEqual(
@@ -80,10 +81,10 @@ test('Linux 使用真实 PostgreSQL 承载业务表、KV 和对象元数据', {
     const file = objectFileName('media/test.bin');
     await writeFile(join(dataDirectory, 'objects', file), Buffer.from('signed-object'));
     await storage.pool.query(
-      `INSERT INTO tuyu_objects
-       (object_key, file_name, size, etag, http_metadata_json, custom_metadata_json)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      ['media/test.bin', file, 13, 'fixture-etag', '{"contentType":"text/plain"}',
+      `INSERT INTO objects
+       (object_key, byte_size, object_etag, http_metadata, custom_metadata)
+       VALUES ($1, $2, $3, $4, $5)`,
+      ['media/test.bin', 13, 'fixture-etag', '{"contentType":"text/plain"}',
         '{"purpose":"fixture"}'],
     );
     const object = await storage.DOWNLOADS.get('media/test.bin', {
@@ -100,3 +101,44 @@ test('Linux 使用真实 PostgreSQL 承载业务表、KV 和对象元数据', {
     await storage.close();
   }
 }));
+
+
+test('已有旧结构被拒绝且不会旁建新表', {
+  skip: postgresBin ? false : '需要 TUYUSERVE_TEST_POSTGRES_BIN 指向真实 PostgreSQL bin',
+}, async () => withPostgres(async ({ root, configuration }) => {
+  const pool = createPostgresPool(configuration);
+  try {
+    // 中文注释：只在本测试独占临时库建立旧结构负例，生产初始化没有旧表名单或兼容分支。
+    await pool.query('CREATE TABLE old_fixture (legacy_value text)');
+    await assert.rejects(openStorage({ dataDirectory: join(root, 'data'),
+      schemaFile: resolve('schema.sql'), postgres: configuration }), /唯一最终结构/u);
+    const state = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+    assert.deepEqual(state.rows.map(row => row.table_name), ['old_fixture']);
+  } finally { await pool.end(); }
+}));
+
+
+test('共用DDL在SQLite实际建表，字段、外键和无恒定角色列一致', async () => {
+  const db = new DatabaseSync(':memory:');
+  try {
+    db.exec('PRAGMA foreign_keys = ON');
+    db.exec(await readFile(resolve('schema.sql'), 'utf8'));
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all();
+    assert.deepEqual(tables.map(row => row.name), Object.keys(BUSINESS_TABLE_COLUMNS).sort());
+    for (const [name, columns] of Object.entries(BUSINESS_TABLE_COLUMNS)) {
+      const actual = db.prepare(`PRAGMA table_info("${name}")`).all().map(row => row.name);
+      assert.deepEqual(actual, columns);
+      assert.ok(actual.every(column => /^[a-z]+_[a-z]+$/u.test(column)));
+    }
+    db.exec(`INSERT INTO users VALUES ('owner', 'active', 1, 1);
+      INSERT INTO users VALUES ('admin', 'active', 1, 1);
+      INSERT INTO signers VALUES ('signer', 'owner', 'account', 1, 'device', 'active', 1, NULL, 1);
+      INSERT INTO instances VALUES ('instance', 'owner', 'key', 'name', 'hotel', NULL, 'active', 1, 1);
+      INSERT INTO grants VALUES ('instance', 'admin', 'active', 'owner', 'signer', 1, NULL)`);
+    assert.equal(db.prepare('SELECT admin_id FROM grants').get().admin_id, 'admin');
+    assert.throws(() => db.prepare('SELECT role FROM grants'), /no such column/u);
+    assert.throws(() => db.exec(`INSERT INTO grants VALUES
+      ('missing', 'admin', 'active', 'owner', 'signer', 1, NULL)`), /FOREIGN KEY/u);
+    assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(), []);
+  } finally { db.close(); }
+});

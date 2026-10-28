@@ -6,21 +6,21 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-import { BUSINESS_TABLE_COLUMNS } from './storage.mjs';
+import { BUSINESS_TABLE_COLUMNS, objectFileName } from './storage.mjs';
 
 const TABLE_ORDER = Object.freeze({
   users: ['tuyu_id'],
-  tuyu_signers: ['signer_id'],
-  merchant_instances: ['merchant_instance_id'],
-  merchant_instance_grants: ['merchant_instance_id', 'administrator_tuyu_id'],
-  user_contacts: ['contact_id'],
-  login_challenges: ['challenge_id'],
-  sessions: ['session_token_hash'],
-  request_nonces: ['nonce_hash'],
-  security_events: ['event_id'],
-  software_releases: ['product_id', 'platform'],
-  catalog_listings: ['listing_id'],
-  trip_posts: ['trip_id'],
+  signers: ['signer_id'],
+  instances: ['instance_id'],
+  grants: ['instance_id', 'admin_id'],
+  contacts: ['contact_id'],
+  challenges: ['challenge_id'],
+  sessions: ['token_hash'],
+  nonces: ['nonce_hash'],
+  events: ['event_id'],
+  releases: ['product_id', 'platform_name'],
+  listings: ['listing_id'],
+  posts: ['trip_id'],
 });
 
 function required(name) {
@@ -151,7 +151,7 @@ async function r2Entries(accountId, bucket, directory) {
         `/accounts/${accountId}/r2/buckets/${encodeURIComponent(bucket)}/objects/${objectPath}`,
       );
       const bytes = new Uint8Array(await response.arrayBuffer());
-      const file = `${hash(new TextEncoder().encode(object.key))}.bin`;
+      const file = objectFileName(object.key);
       await writeFile(join(directory, file), bytes, { mode: 0o600 });
       entries.push({
         key: object.key,

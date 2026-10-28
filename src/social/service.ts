@@ -5,19 +5,19 @@ import type { Env, TripPostRow } from '../types';
 import { insertTrip, listPublicTrips, readTripByIdempotency } from './repository';
 
 interface CreateTripRequest {
-  title?: unknown;
-  content?: unknown;
+  post_title?: unknown;
+  post_body?: unknown;
   media_keys?: unknown;
-  idempotency_key?: unknown;
+  request_key?: unknown;
 }
 
 function responseTrip(row: TripPostRow): Record<string, unknown> {
   return {
     trip_id: row.trip_id,
-    author_tuyu_id: row.author_tuyu_id,
-    title: row.title,
-    content: row.content,
-    media_keys: JSON.parse(row.media_keys_json),
+    author_id: row.author_id,
+    post_title: row.post_title,
+    post_body: row.post_body,
+    media_keys: JSON.parse(row.media_keys),
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
@@ -26,27 +26,27 @@ function responseTrip(row: TripPostRow): Record<string, unknown> {
 export async function createTrip(request: Request, env: Env): Promise<Response> {
   const session = await requireSession(request, env, 'tuyulove');
   const body = await readJson<CreateTripRequest>(request);
-  if (typeof body.title !== 'string' || body.title.trim().length < 1
-      || body.title.length > 120 || typeof body.content !== 'string'
-      || body.content.trim().length < 1 || body.content.length > 20_000
-      || typeof body.idempotency_key !== 'string'
-      || !/^[A-Za-z0-9._:-]{8,128}$/u.test(body.idempotency_key)
+  if (typeof body.post_title !== 'string' || body.post_title.trim().length < 1
+      || body.post_title.length > 120 || typeof body.post_body !== 'string'
+      || body.post_body.trim().length < 1 || body.post_body.length > 20_000
+      || typeof body.request_key !== 'string'
+      || !/^[A-Za-z0-9._:-]{8,128}$/u.test(body.request_key)
       || !Array.isArray(body.media_keys) || body.media_keys.length > 12
       || body.media_keys.some((item) => typeof item !== 'string'
         || !/^trip\/[A-Za-z0-9/_-]{1,240}$/u.test(item))) {
     throw new ApiError(400, 'invalid_trip_post', '游记内容无效');
   }
-  const repeated = await readTripByIdempotency(env, session.tuyu_id, body.idempotency_key);
+  const repeated = await readTripByIdempotency(env, session.tuyu_id, body.request_key);
   if (repeated) return jsonResponse({ ok: true, trip: responseTrip(repeated) });
   const timestamp = Date.now();
   const row: TripPostRow = {
     trip_id: createId('ttr'),
-    author_tuyu_id: session.tuyu_id,
-    title: body.title.trim(),
-    content: body.content.trim(),
-    media_keys_json: JSON.stringify(body.media_keys),
-    idempotency_key: body.idempotency_key,
-    status: 'published',
+    author_id: session.tuyu_id,
+    post_title: body.post_title.trim(),
+    post_body: body.post_body.trim(),
+    media_keys: JSON.stringify(body.media_keys),
+    request_key: body.request_key,
+    post_state: 'published',
     created_at: timestamp,
     updated_at: timestamp,
   };

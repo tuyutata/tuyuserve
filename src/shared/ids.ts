@@ -1,4 +1,4 @@
-import type { TuyuAudience } from '../types';
+import type { ProductId } from '../types';
 
 export function createId(prefix: string): string {
   return `${prefix}_${crypto.randomUUID().replaceAll('-', '')}`;
@@ -23,9 +23,9 @@ export function assertAccountId(value: unknown): string {
   return value.toLowerCase();
 }
 
-export function assertMerchantInstanceId(value: unknown): string {
+export function assertInstanceId(value: unknown): string {
   if (typeof value !== 'string' || !/^tmi_[0-9a-f]{32}$/.test(value)) {
-    throw new TypeError('invalid_merchant_instance_id');
+    throw new TypeError('invalid_instance_id');
   }
   return value;
 }
@@ -42,7 +42,7 @@ export function assertDeviceId(value: unknown): string {
   return value;
 }
 
-export function assertAudience(value: unknown): TuyuAudience {
+export function assertProductId(value: unknown): ProductId {
   if (
     value !== 'tuyulove'
     && value !== 'tuyulife'
@@ -50,7 +50,7 @@ export function assertAudience(value: unknown): TuyuAudience {
     && value !== 'tuyubooking'
     && value !== 'tuyufactory'
   ) {
-    throw new TypeError('invalid_audience');
+    throw new TypeError('invalid_product_id');
   }
   return value;
 }

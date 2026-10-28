@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import {
   BUSINESS_TABLE_COLUMNS,
   BUSINESS_TABLES,
+  objectFileName,
   createPostgresPool,
   initializePostgres,
   postgresConfiguration,
@@ -214,7 +215,7 @@ try {
     ])
         || typeof entry.key !== 'string' || Buffer.byteLength(entry.key) < 1
         || Buffer.byteLength(entry.key) > 1_024
-        || entry.file !== `${hash(entry.key)}.bin`
+        || entry.file !== objectFileName(entry.key)
         || !Number.isSafeInteger(entry.size) || entry.size < 0
         || !/^[0-9a-f]{64}$/u.test(entry.sha256)
         || typeof entry.etag !== 'string' || entry.etag.length < 1 || entry.etag.length > 256
@@ -263,7 +264,7 @@ try {
   let objectsSwitched = false;
   try {
     await client.query('BEGIN');
-    for (const table of [...BUSINESS_TABLES, 'tuyu_kv', 'tuyu_objects']) {
+    for (const table of [...BUSINESS_TABLES, 'entries', 'objects']) {
       const state = await client.query(`SELECT EXISTS (SELECT 1 FROM "${table}" LIMIT 1) AS used`);
       if (state.rows[0].used) throw new Error(`目标 PostgreSQL 表不是空表: ${table}`);
     }
@@ -280,19 +281,18 @@ try {
     }
     for (const entry of kv) {
       await client.query(
-        `INSERT INTO tuyu_kv (key, value, expires_at, metadata_json)
+        `INSERT INTO entries (entry_key, entry_value, expires_at, metadata_json)
          VALUES ($1, $2, $3, $4)`,
         [entry.key, entry.value, entry.expiresAt, entry.metadata],
       );
     }
     for (const entry of objects) {
       await client.query(
-        `INSERT INTO tuyu_objects
-         (object_key, file_name, size, etag, http_metadata_json, custom_metadata_json)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
+        `INSERT INTO objects
+         (object_key, byte_size, object_etag, http_metadata, custom_metadata)
+         VALUES ($1, $2, $3, $4, $5)`,
         [
           entry.key,
-          entry.file,
           entry.size,
           entry.etag,
           JSON.stringify(entry.http_metadata),

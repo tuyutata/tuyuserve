@@ -123,8 +123,8 @@ tuyuserve/
 |---|---|---|
 | 服务进程 | Workers | 安装包内固定 Node.js ARM64 与独立 systemd 服务 |
 | 关系数据 | D1 | 安装包内 PostgreSQL 17.11 ARM64 |
-| 短期 KV | Workers KV | PostgreSQL `tuyu_kv` |
-| 对象数据 | R2 | `/var/lib/tuyuserve/objects/` 与 PostgreSQL `tuyu_objects` 元数据 |
+| 短期 KV | Workers KV | PostgreSQL `entries` |
+| 对象数据 | R2 | `/var/lib/tuyuserve/objects/` 与 PostgreSQL `objects` 元数据 |
 | 业务结构 | `schema.sql` | 安装包内 `share/schema.sql`，来源相同 |
 | 传输 | HTTPS | HTTPS，启动时必须提供证书和私钥 |
 
@@ -137,7 +137,7 @@ ARM64 构建机上校验源码后编译；客户安装和启动阶段不联网�
 `tuyuserve-postgresql.service` 以独立的 `tuyuserve-db` 系统用户运行，只监听
 `/run/tuyuserve-postgresql` Unix Socket，不监听 TCP；`tuyuserve.service` 以 `tuyuserve` 用户运行，
 使用独立 `tuyuserve_app` PostgreSQL 角色和 SCRAM 密码。数据库位于
-`/var/lib/tuyuserve/postgresql/`，对象正文位于 `/var/lib/tuyuserve/objects/`。本机 KV 会话和对象
+`/var/lib/tuyuserve/postgresql/`，对象正文位于 `/var/lib/tuyuserve/objects/`。本机通用 KV 和对象
 元数据进入 PostgreSQL，但对象正文不塞入关系表。
 
 当前安装器只建立一个本机 PostgreSQL 实例。PostgreSQL 本身具备流复制能力，但主从双备、故障
@@ -150,7 +150,7 @@ Release 固定使用 `ubuntu-24.04-arm`，并回读安装包内 Node ELF 为 `AR
 
 Cloudflare 数据通过一个归档完整导出：
 
-- D1：在确认写入已停止后，使用当前仓库锁定的 Wrangler 分页读取固定 14 张业务表，按固定字段
+- D1：在确认写入已停止后，使用当前仓库锁定的 Wrangler 分页读取固定 12 张业务表，按固定字段
   和主键顺序写入 NDJSON；不把 SQLite 专用 SQL 交给 PostgreSQL 执行。
 - KV：调用 Cloudflare 官方 REST API 分页读取全部键，以规范 Base64 无损保存字节，同时保存
   到期时间和 KV 元数据。
@@ -225,7 +225,7 @@ TuyuFactory 今后只发布厂家和商品公开摘要。途遇商家端中的�
 
 - 所有第一方网络连接只允许 HTTPS/WSS，Linux 服务没有证书和私钥时拒绝启动。
 - 登录挑战短时、一次性并绑定 audience、途遇号、设备和密钥修订号。
-- Session Token 明文只返回客户端；D1 和 KV 索引只使用 Token 的 SHA-256。
+- Session Token 明文只返回客户端；关系数据库是唯一会话真源，只以 Token 的 SHA-256 定位，KV 不保存认证会话。
 - 公开摘要必须验证安装实例、`sr25519` 签名、时间、HTTPS 地址和允许字段。
 - 写请求必须具备请求标识与幂等边界。
 - 私钥、完整 Token、联系方式原文和平台凭据不得进入日志、仓库或响应。
@@ -447,3 +447,19 @@ GitHub接口使用普通参数和已授权令牌，返回本仓既有版本计�
 Cloudflare账户配置和导出入口唯一接纳CLOUDFLARE_ACCOUNT；调用Wrangler时映射至官方CLOUDFLARE_ACCOUNT_ID环境变量，不读取旧产品配置别名。
 
 本产品配置项统一为name、description、accessLevel、kind、format五个必填字段；不适用规则明确填写“不适用”。name严格使用两组大写字母和一个下划线，同名共用控制台唯一值，当前页仅汇总实际声明的使用产品。操作列固定写入/更换、查看、删除；保密查看保留生物识别。现有配置消费者随声明同步改名，官方工具/API字段保持官方名称，不新增旧名兼容或配置副本。
+
+
+## 第一方关系结构与唯一数据真源
+
+云端与Linux共用schema.sql的12张业务表：users、signers、instances、grants、contacts、challenges、sessions、nonces、events、releases、listings、posts。Linux只增加entries和objects两张适配表，不另建账户或业务模型。数据库列使用两个单词的snake_case；TypeScript业务变量保持lowerCamelCase，SQL行和JSON原始键遵循所属边界合同；不增加别名或翻译层。
+
+云端会话只存sessions，以token_hash定位；每次认证一次读取校验产品、有效期、撤销状态及当前用户/签名绑定。KV不再存取认证会话，数据库失败直接失败。通用KV接口和资源声明保持。挑战只保留不可变claims并使用现有构造器恢复签名字节，不存signing_payload。商家授权是否存在决定MERCHANT_ADMIN，不保存恒定role列；所有者与管理员角色仍独立判断。
+
+listings保留原始signed_payload、payload_signature和发布时instance_key。仅保存搜索、排序、关联和版本比较所需投影；币种、最低金额、媒体地址和服务地址只从原签名载荷读取，投影只能由同一次验签写入。原签名字段、字节及历史密钥不因改名重组。对象文件名由objectFileName唯一计算，不入表；正式对象键、文件字节和官方KV/R2接口不变。
+
+初始化只接受空的所属结构或完整最终结构；旧表、部分结构和字段漂移失败，禁止自动补齐、迁移或重建。导入导出仅接纳当前结构，无旧格式回退。共享Rust本机账户及固定TUYU协议不纳入本节改名；两消费产品继续锁定原共享账户提交。
+
+
+### 第4步既有回归阻塞收口
+
+完整入口按资源回执显式交付Bash；同文件夹具按真实Shell参数执行，子进程继承独占测试会话；Publish同文件测试模拟GitHub，只读校验的正常CLI行为不变。

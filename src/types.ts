@@ -1,13 +1,13 @@
-export type TuyuAudience =
+export type ProductId =
   | 'tuyulove'
   | 'tuyulife'
   | 'tuyuserve'
   | 'tuyubooking'
   | 'tuyufactory';
-export type UserStatus = 'active' | 'frozen' | 'closed';
-export type SignerStatus = 'active' | 'revoked';
+export type UserState = 'active' | 'frozen' | 'closed';
+export type SignerState = 'active' | 'revoked';
 export type MerchantRole = 'MERCHANT_OWNER' | 'MERCHANT_ADMIN';
-export type ListingCapability = 'hotel' | 'restaurant' | 'tour' | 'ticket';
+export type ServiceKind = 'hotel' | 'restaurant' | 'tour' | 'ticket';
 
 export interface Env {
   DB: D1Database;
@@ -18,9 +18,10 @@ export interface Env {
   SESSION_TTL_SECONDS?: string;
 }
 
+// 中文注释：Row 和原始 JSON 的键遵循数据库/API 合同，业务局部变量遵循 TypeScript 命名。
 export interface UserRow {
   tuyu_id: string;
-  status: UserStatus;
+  user_state: UserState;
   created_at: number;
   updated_at: number;
 }
@@ -31,31 +32,30 @@ export interface TuyuSignerRow {
   account_id: string;
   key_revision: number;
   device_id: string;
-  status: SignerStatus;
+  signer_state: SignerState;
   bound_at: number;
   revoked_at: number | null;
   updated_at: number;
 }
 
 export interface MerchantInstanceRow {
-  merchant_instance_id: string;
-  merchant_tuyu_id: string;
-  installation_public_key: string;
-  installation_name: string;
+  instance_id: string;
+  owner_id: string;
+  instance_key: string;
+  instance_name: string;
   merchant_type: 'hotel' | 'restaurant' | 'tour' | 'scenic' | 'mixed';
   service_endpoint: string | null;
-  status: 'active' | 'suspended' | 'retired';
+  instance_state: 'active' | 'suspended' | 'retired';
   registered_at: number;
   updated_at: number;
 }
 
 export interface MerchantGrantRow {
-  merchant_instance_id: string;
-  administrator_tuyu_id: string;
-  role: 'MERCHANT_ADMIN';
-  status: 'active' | 'revoked';
-  granted_by_tuyu_id: string;
-  granted_by_signer_id: string;
+  instance_id: string;
+  admin_id: string;
+  grant_state: 'active' | 'revoked';
+  issuer_id: string;
+  issuer_signer: string;
   granted_at: number;
   revoked_at: number | null;
 }
@@ -66,9 +66,8 @@ export interface LoginChallengeRow {
   signer_id: string;
   key_revision: number;
   account_id: string;
-  audience: TuyuAudience;
+  product_id: ProductId;
   device_id: string;
-  signing_payload: string;
   expires_at: number;
   used_at: number | null;
 }
@@ -78,7 +77,7 @@ export interface SessionState {
   signer_id: string;
   key_revision: number;
   account_id: string;
-  audience: TuyuAudience;
+  product_id: ProductId;
   device_id: string;
   created_at: number;
   expires_at: number;
@@ -86,33 +85,29 @@ export interface SessionState {
 
 export interface CatalogListingRow {
   listing_id: string;
-  merchant_instance_id: string;
-  capability: ListingCapability;
-  title: string;
-  summary: string;
-  location: string;
-  currency: string;
-  minimum_amount: number;
-  media_url: string | null;
-  service_endpoint: string;
-  installation_public_key: string;
-  source_updated_at: number;
+  instance_id: string;
+  service_kind: ServiceKind;
+  listing_title: string;
+  listing_summary: string;
+  listing_location: string;
+  instance_key: string;
+  source_time: number;
   expires_at: number;
   signed_payload: string;
-  signature: string;
-  publication_idempotency_key: string;
-  status: 'active' | 'withdrawn';
+  payload_signature: string;
+  request_key: string;
+  listing_state: 'active' | 'withdrawn';
   published_at: number;
 }
 
 export interface TripPostRow {
   trip_id: string;
-  author_tuyu_id: string;
-  title: string;
-  content: string;
-  media_keys_json: string;
-  idempotency_key: string;
-  status: 'published' | 'deleted';
+  author_id: string;
+  post_title: string;
+  post_body: string;
+  media_keys: string;
+  request_key: string;
+  post_state: 'published' | 'deleted';
   created_at: number;
   updated_at: number;
 }

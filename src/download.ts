@@ -17,11 +17,11 @@ const products = {
   },
 } as const;
 export type DownloadProduct = keyof typeof products;
-type Platform = keyof typeof products.tuyubooking;
+type PlatformName = keyof typeof products.tuyubooking;
 type Installer = { readonly asset: string; readonly contentType: string };
 
-function parsePlatform(value: string): Platform | null {
-  return Object.hasOwn(products.tuyubooking, value) ? value as Platform : null;
+function parsePlatformName(value: string): PlatformName | null {
+  return Object.hasOwn(products.tuyubooking, value) ? value as PlatformName : null;
 }
 
 function objectHeaders(object: R2Object, installer: Installer): Headers {
@@ -55,19 +55,19 @@ function resolvedRange(range: R2Range, size: number): { offset: number; length: 
 
 /** D1 只保存当前公开版本指针，安装包正文不进入关系数据库。 */
 export async function installerRedirect(
-  env: Env, productID: DownloadProduct, value: string,
+  env: Env, productId: DownloadProduct, value: string,
 ): Promise<Response> {
-  const platform = parsePlatform(value);
-  if (platform === null) return new Response('Not found', { status: 404 });
-  const installer: Installer = products[productID][platform];
+  const platformName = parsePlatformName(value);
+  if (platformName === null) return new Response('Not found', { status: 404 });
+  const installer: Installer = products[productId][platformName];
   const row = await env.DB.prepare(
-    'SELECT version_tag FROM software_releases WHERE product_id = ? AND platform = ? LIMIT 1',
-  ).bind(productID, platform).first<{ version_tag: string }>();
+    'SELECT version_tag FROM releases WHERE product_id = ? AND platform_name = ? LIMIT 1',
+  ).bind(productId, platformName).first<{ version_tag: string }>();
   if (row === null || row.version_tag.length === 0) {
     return new Response('Release not published', { status: 404 });
   }
-  const namespace = productID === 'tuyubooking' ? '' : `/${productID}`;
-  const location = `${DOWNLOAD_ORIGIN}/files${namespace}/${platform}/${encodeURIComponent(row.version_tag)}/${installer.asset}`;
+  const namespace = productId === 'tuyubooking' ? '' : `/${productId}`;
+  const location = `${DOWNLOAD_ORIGIN}/files${namespace}/${platformName}/${encodeURIComponent(row.version_tag)}/${installer.asset}`;
   return new Response(null, {
     status: 302,
     headers: { Location: location, 'Cache-Control': 'no-store' },
@@ -77,23 +77,23 @@ export async function installerRedirect(
 /** 固定平台、版本和资产名后流式读取 R2，禁止任意对象键访问。 */
 export async function installerDownload(request: Request, env: Env, path: string[]): Promise<Response> {
   if (path[0] !== 'files') return new Response('Not found', { status: 404 });
-  const productID: DownloadProduct = path[1] === 'tuyufactory' ? 'tuyufactory' : 'tuyubooking';
-  const offset = productID === 'tuyubooking' ? 1 : 2;
+  const productId: DownloadProduct = path[1] === 'tuyufactory' ? 'tuyufactory' : 'tuyubooking';
+  const offset = productId === 'tuyubooking' ? 1 : 2;
   if (path.length !== offset + 3) return new Response('Not found', { status: 404 });
-  const platform = parsePlatform(path[offset]);
-  if (platform === null) return new Response('Not found', { status: 404 });
-  const installer: Installer = products[productID][platform];
+  const platformName = parsePlatformName(path[offset]);
+  if (platformName === null) return new Response('Not found', { status: 404 });
+  const installer: Installer = products[productId][platformName];
   if (path[offset + 2] !== installer.asset) {
     return new Response('Not found', { status: 404 });
   }
   const versionTag = decodeURIComponent(path[offset + 1]);
   const versionPattern = new RegExp(
-    `^${productID}-${platform}-v[0-9]+\\.[0-9]+\\.[0-9]+$`, 'u',
+    `^${productId}-${platformName}-v[0-9]+\\.[0-9]+\\.[0-9]+$`, 'u',
   );
   if (!versionPattern.test(versionTag)) {
     return new Response('Not found', { status: 404 });
   }
-  const key = `${productID}/${platform}/${versionTag}/${installer.asset}`;
+  const key = `${productId}/${platformName}/${versionTag}/${installer.asset}`;
   if (request.method === 'HEAD') {
     const object = await env.DOWNLOADS.head(key);
     if (object === null) return new Response('Not found', { status: 404 });

@@ -56,7 +56,7 @@ async function cloudflareArchive(root) {
   const tableManifests = [];
   for (const [name, columns] of Object.entries(BUSINESS_TABLE_COLUMNS)) {
     const rows = name === 'users'
-      ? [{ tuyu_id: 'TUYU-1', status: 'active', created_at: 1, updated_at: 1 }]
+      ? [{ tuyu_id: 'TUYU-1', user_state: 'active', created_at: 1, updated_at: 1 }]
       : [];
     const bytes = Buffer.from(rows.map((row) => `${JSON.stringify(row)}\n`).join(''));
     const file = `database/${name}.ndjson`;
@@ -71,8 +71,8 @@ async function cloudflareArchive(root) {
     created_at: new Date().toISOString(),
     database: { tables: tableManifests },
     kv: [{
-      key: 'tuyu_session:test', value_base64: Buffer.from('{"ok":true}').toString('base64'),
-      expiration: null, metadata: { audience: 'tuyulove' },
+      key: 'fixture:test', value_base64: Buffer.from('{"ok":true}').toString('base64'),
+      expiration: null, metadata: { purpose: 'fixture' },
     }],
     objects: [{
       key: 'media/trip.jpg', file, size: object.length, sha256: hash(object),
@@ -112,7 +112,7 @@ test('Cloudflare D1、KV 和 R2 归档可导入真实 PostgreSQL', {
   });
   try {
     assert.equal((await storage.DB.prepare('SELECT tuyu_id FROM users').first()).tuyu_id, 'TUYU-1');
-    assert.deepEqual(await storage.SESSION_CACHE.get('tuyu_session:test', 'json'), { ok: true });
+    assert.deepEqual(await storage.SESSION_CACHE.get('fixture:test', 'json'), { ok: true });
     const importedObject = await storage.DOWNLOADS.get('media/trip.jpg', {
       range: new Headers({ range: 'bytes=0-5' }),
     });

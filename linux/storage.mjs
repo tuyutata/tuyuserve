@@ -6,71 +6,27 @@ import pg from 'pg';
 
 const { Pool, types } = pg;
 
-const BUSINESS_TABLES = Object.freeze([
-  'users',
-  'tuyu_signers',
-  'merchant_instances',
-  'merchant_instance_grants',
-  'user_contacts',
-  'login_challenges',
-  'sessions',
-  'request_nonces',
-  'security_events',
-  'software_releases',
-  'catalog_listings',
-  'trip_posts',
-]);
-
 const BUSINESS_TABLE_COLUMNS = Object.freeze({
-  users: ['tuyu_id', 'status', 'created_at', 'updated_at'],
-  tuyu_signers: [
-    'signer_id', 'tuyu_id', 'account_id', 'key_revision', 'device_id', 'status',
-    'bound_at', 'revoked_at', 'updated_at',
-  ],
-  merchant_instances: [
-    'merchant_instance_id', 'merchant_tuyu_id', 'installation_public_key',
-    'installation_name', 'merchant_type', 'service_endpoint', 'status', 'registered_at',
-    'updated_at',
-  ],
-  merchant_instance_grants: [
-    'merchant_instance_id', 'administrator_tuyu_id', 'role', 'status', 'granted_by_tuyu_id',
-    'granted_by_signer_id', 'granted_at', 'revoked_at',
-  ],
-  user_contacts: [
-    'contact_id', 'tuyu_id', 'contact_type', 'lookup_hash', 'ciphertext', 'nonce', 'mac',
-    'verified_at', 'created_at', 'updated_at',
-  ],
-  login_challenges: [
-    'challenge_id', 'tuyu_id', 'signer_id', 'key_revision', 'account_id', 'audience',
-    'device_id', 'signing_payload', 'expires_at', 'used_at',
-  ],
-  sessions: [
-    'session_token_hash', 'tuyu_id', 'signer_id', 'key_revision', 'account_id', 'audience',
-    'device_id', 'created_at', 'expires_at', 'revoked_at',
-  ],
-  request_nonces: ['nonce_hash', 'tuyu_id', 'audience', 'expires_at'],
-  security_events: [
-    'event_id', 'tuyu_id', 'event_type', 'audience', 'device_id', 'signer_id',
-    'merchant_instance_id', 'created_at',
-  ],
-  software_releases: ['product_id', 'platform', 'version_tag'],
-  catalog_listings: [
-    'listing_id', 'merchant_instance_id', 'capability', 'title', 'summary', 'location',
-    'currency', 'minimum_amount', 'media_url', 'service_endpoint',
-    'installation_public_key', 'source_updated_at', 'expires_at', 'signed_payload',
-    'signature', 'publication_idempotency_key', 'status', 'published_at',
-  ],
-  trip_posts: [
-    'trip_id', 'author_tuyu_id', 'title', 'content', 'media_keys_json', 'idempotency_key',
-    'status', 'created_at', 'updated_at',
-  ],
+  users: ['tuyu_id', 'user_state', 'created_at', 'updated_at'],
+  signers: ['signer_id', 'tuyu_id', 'account_id', 'key_revision', 'device_id', 'signer_state', 'bound_at', 'revoked_at', 'updated_at'],
+  instances: ['instance_id', 'owner_id', 'instance_key', 'instance_name', 'merchant_type', 'service_endpoint', 'instance_state', 'registered_at', 'updated_at'],
+  grants: ['instance_id', 'admin_id', 'grant_state', 'issuer_id', 'issuer_signer', 'granted_at', 'revoked_at'],
+  contacts: ['contact_id', 'tuyu_id', 'contact_type', 'lookup_hash', 'cipher_data', 'cipher_nonce', 'cipher_mac', 'verified_at', 'created_at', 'updated_at'],
+  challenges: ['challenge_id', 'tuyu_id', 'signer_id', 'key_revision', 'account_id', 'product_id', 'device_id', 'expires_at', 'used_at'],
+  sessions: ['token_hash', 'tuyu_id', 'signer_id', 'key_revision', 'account_id', 'product_id', 'device_id', 'created_at', 'expires_at', 'revoked_at'],
+  nonces: ['nonce_hash', 'tuyu_id', 'product_id', 'expires_at'],
+  events: ['event_id', 'tuyu_id', 'event_type', 'product_id', 'device_id', 'signer_id', 'instance_id', 'created_at'],
+  releases: ['product_id', 'platform_name', 'version_tag'],
+  listings: ['listing_id', 'instance_id', 'service_kind', 'listing_title', 'listing_summary', 'listing_location', 'instance_key', 'source_time', 'expires_at', 'signed_payload', 'payload_signature', 'request_key', 'listing_state', 'published_at'],
+  posts: ['trip_id', 'author_id', 'post_title', 'post_body', 'media_keys', 'request_key', 'post_state', 'created_at', 'updated_at'],
 });
 
+// 中文注释：表序从唯一字段清单派生，导入、导出与结构校验共用。
+const BUSINESS_TABLES = Object.freeze(Object.keys(BUSINESS_TABLE_COLUMNS));
+
 const STORAGE_TABLE_COLUMNS = Object.freeze({
-  tuyu_kv: ['key', 'value', 'expires_at', 'metadata_json'],
-  tuyu_objects: [
-    'object_key', 'file_name', 'size', 'etag', 'http_metadata_json', 'custom_metadata_json',
-  ],
+  entries: ['entry_key', 'entry_value', 'expires_at', 'metadata_json'],
+  objects: ['object_key', 'byte_size', 'object_etag', 'http_metadata', 'custom_metadata'],
 });
 
 // 中文注释：服务内时间戳和序号必须保持 JavaScript 安全整数，禁止静默损失精度。
@@ -192,16 +148,16 @@ class Kv {
 
   async get(key, type = 'text') {
     const result = await this.pool.query(
-      'SELECT value, expires_at FROM tuyu_kv WHERE key = $1',
+      'SELECT entry_value, expires_at FROM entries WHERE entry_key = $1',
       [key],
     );
     const row = result.rows[0];
     if (!row) return null;
     if (row.expires_at !== null && row.expires_at <= Date.now()) {
-      await this.pool.query('DELETE FROM tuyu_kv WHERE key = $1', [key]);
+      await this.pool.query('DELETE FROM entries WHERE entry_key = $1', [key]);
       return null;
     }
-    const bytes = Buffer.from(row.value);
+    const bytes = Buffer.from(row.entry_value);
     if (type === 'arrayBuffer') {
       return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
     }
@@ -216,15 +172,15 @@ class Kv {
     if (expiresAt !== null && !Number.isSafeInteger(expiresAt)) throw new Error('KV 到期时间无效');
     const bytes = typeof value === 'string' ? Buffer.from(value) : Buffer.from(value);
     await this.pool.query(
-      `INSERT INTO tuyu_kv (key, value, expires_at, metadata_json) VALUES ($1, $2, $3, $4)
-       ON CONFLICT(key) DO UPDATE SET value=excluded.value, expires_at=excluded.expires_at,
+      `INSERT INTO entries (entry_key, entry_value, expires_at, metadata_json) VALUES ($1, $2, $3, $4)
+       ON CONFLICT(entry_key) DO UPDATE SET entry_value=excluded.entry_value, expires_at=excluded.expires_at,
        metadata_json=excluded.metadata_json`,
       [key, bytes, expiresAt, JSON.stringify(options.metadata ?? null)],
     );
   }
 
   async delete(key) {
-    await this.pool.query('DELETE FROM tuyu_kv WHERE key = $1', [key]);
+    await this.pool.query('DELETE FROM entries WHERE entry_key = $1', [key]);
   }
 }
 
@@ -247,7 +203,7 @@ function rangeFrom(headers, size) {
 }
 
 function objectView(row, body, range) {
-  const metadata = JSON.parse(String(row.http_metadata_json));
+  const metadata = JSON.parse(String(row.http_metadata));
   const headerNames = {
     cacheControl: 'cache-control',
     cacheExpiry: 'expires',
@@ -258,10 +214,10 @@ function objectView(row, body, range) {
   };
   return {
     body,
-    size: row.size,
+    size: row.byte_size,
     range,
-    httpEtag: `"${String(row.etag)}"`,
-    customMetadata: JSON.parse(String(row.custom_metadata_json)),
+    httpEtag: `"${String(row.object_etag)}"`,
+    customMetadata: JSON.parse(String(row.custom_metadata)),
     writeHttpMetadata(headers) {
       for (const [name, value] of Object.entries(metadata)) {
         const header = headerNames[name];
@@ -279,8 +235,8 @@ class Objects {
 
   async row(key) {
     const result = await this.pool.query(
-      `SELECT object_key, file_name, size, etag, http_metadata_json, custom_metadata_json
-       FROM tuyu_objects WHERE object_key = $1`,
+      `SELECT object_key, byte_size, object_etag, http_metadata, custom_metadata
+       FROM objects WHERE object_key = $1`,
       [key],
     );
     return result.rows[0] ?? null;
@@ -294,8 +250,7 @@ class Objects {
   async get(key, options = {}) {
     const row = await this.row(key);
     if (!row) return null;
-    if (!/^[0-9a-f]{64}\.bin$/u.test(row.file_name)) throw new Error('对象文件名无效');
-    const bytes = await readFile(join(this.directory, row.file_name));
+    const bytes = await readFile(join(this.directory, objectFileName(row.object_key)));
     const range = rangeFrom(options.range, bytes.length);
     if (range?.invalid) {
       return objectView(row, new Uint8Array(), { offset: bytes.length, length: 0 });
@@ -313,33 +268,33 @@ export async function initializePostgres(pool, schemaFile) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    // 中文注释：先核对所属 public Schema，旧表或半套结构必须失败，不能旁建第二套表。
+    const expectedColumns = { ...BUSINESS_TABLE_COLUMNS, ...STORAGE_TABLE_COLUMNS };
     const existing = await client.query(
       `SELECT table_name FROM information_schema.tables
-       WHERE table_schema = 'public' AND table_name = ANY($1::text[])`,
-      [BUSINESS_TABLES],
+       WHERE table_schema = 'public' AND table_type = 'BASE TABLE'`,
     );
     if (existing.rows.length === 0) {
       await client.query(await readFile(schemaFile, 'utf8'));
-    } else if (existing.rows.length !== BUSINESS_TABLES.length) {
-      throw new Error('PostgreSQL 业务表不完整，拒绝自动补齐非最终结构');
+      await client.query(`
+        CREATE TABLE entries (
+          entry_key TEXT PRIMARY KEY,
+          entry_value BYTEA NOT NULL,
+          expires_at BIGINT,
+          metadata_json TEXT NOT NULL
+        );
+        CREATE TABLE objects (
+          object_key TEXT PRIMARY KEY,
+          byte_size BIGINT NOT NULL CHECK(byte_size >= 0),
+          object_etag TEXT NOT NULL,
+          http_metadata TEXT NOT NULL,
+          custom_metadata TEXT NOT NULL
+        );
+      `);
+    } else if (existing.rows.map(row => row.table_name).sort().join('\0')
+        !== Object.keys(expectedColumns).sort().join('\0')) {
+      throw new Error('PostgreSQL 表不符合唯一最终结构，拒绝自动补齐或重建');
     }
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS tuyu_kv (
-        key TEXT PRIMARY KEY,
-        value BYTEA NOT NULL,
-        expires_at BIGINT,
-        metadata_json TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS tuyu_objects (
-        object_key TEXT PRIMARY KEY,
-        file_name TEXT NOT NULL UNIQUE,
-        size BIGINT NOT NULL CHECK(size >= 0),
-        etag TEXT NOT NULL,
-        http_metadata_json TEXT NOT NULL,
-        custom_metadata_json TEXT NOT NULL
-      );
-    `);
-    const expectedColumns = { ...BUSINESS_TABLE_COLUMNS, ...STORAGE_TABLE_COLUMNS };
     const actual = await client.query(
       `SELECT table_name, column_name FROM information_schema.columns
        WHERE table_schema = 'public' AND table_name = ANY($1::text[])
