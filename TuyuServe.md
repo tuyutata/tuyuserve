@@ -28,13 +28,9 @@
 
 ## 聊天功能的唯一产品归属
 
-**聊天客户端的逻辑功能只能在 TataChatSDK 中实现；聊天服务端的逻辑功能只能在 CitizenServe.tatachat 中实现。公民、途遇及其他产品只依赖使用。**
+聊天客户端归公民App的chat普通本地包，随App源码构建；协议唯一源为公民App的network/proto。聊天服务端归CitizenServe的chat模块。本产品不声明独立聊天客户端产品或分发路线。
 
 TuyuServe 涉及聊天时只作为依赖使用方；本条不代表尚未接入聊天的产品已经具备聊天能力。
-
-- 消息、会话、群组、加密、协议、传输、同步、重试、聊天存储、附件、通话及聊天界面行为，按客户端与服务端职责分别归 TataChatSDK 和 CitizenServe.tatachat；新增功能、缺陷修复和平台差异也必须在所属产品内完成。
-- 消费产品只提供产品入口、身份与业务权益结果、服务地址及授权、主题和公开接口要求的平台配置；只通过公开接口接入，禁止复制、重写、包装成另一套聊天内核或维护产品专属聊天实现。CitizenServe、TuyuServe 的产品身份与权益授权不包含聊天数据面的实现职责。
-- 本机开发直接依赖仓库路径；公民、途遇等产品的正式版本依赖塔塔聊天正式 Release；第三方市场分发使用公开市场版本。依赖使用不以公开市场发布为前置条件，也不改变实现归属。
 
 受控缓存固定为 `tuyuserve/target/<platform>/<build|ci|release|publish>/`。本机 Build 的 Node 视图、`node_modules`、Wrangler/TypeScript状态、Linux脚本测试、bundle、临时文件和日志均写 `build/`；macOS 上的 Linux ARM Build 只做源码与 bundle 编译验证，正式 PostgreSQL/Node 运行时安装包只由真实 Linux ARM64 Release 生成。
 
@@ -210,8 +206,6 @@ Base64、摘要不符、对象键与文件名不符、非安全整数、缺表�
 | `GET/POST /v1/trips` | 公开读取或由已登录用户幂等发布游记 |
 | `GET /v1/health` | 服务身份与健康检查 |
 
-聊天会话、消息同步、存储和推送由 CitizenServe.tatachat 唯一实现；TuyuServe 的明文聊天路由、实现、类型、schema表和Linux存储登记已删除，当前没有聊天服务能力。本次不接入聊天模块，也不修改其他线上资源。游记当前保存正文和对象键；媒体上传授权、缩略图和通知尚未实现。
-
 #### 7. 商家、厂家和客户端边界
 
 TuyuBooking 只向 TuyuServe 发布酒店、餐厅、旅行团或票务的签名公开摘要、准确 HTTPS 地址和
@@ -378,10 +372,6 @@ Pub/npm/Cargo按原始锁准备；Git按固定HTTPS提交检出，Git Cargo目�
 
 ### 产品独立资源与原件缓存
 
-
-
-
-
 错来源、摘要、重复同源内容、生成状态、硬链接、内部链接越界或循环、取消及任务副本漂移均据实失败。独立与控制台调用使用同一实现；控制台只交付普通工具路径和已授权输入并跟踪原有任务，UI、功能、按钮、平台与操作顺序保持。用例源码已同步，执行留待整项实现结束后的统一测试。
 
 ### 独立入口回归验真边界
@@ -431,7 +421,6 @@ Workflow 只接受 main 的手动派发，核对源码 SHA 与运行身份；编
 本产品的 `scripts/build.mjs` 公开 `dispatch`、`startAutomation` 与 `recoverAutomation`：由产品按本仓平台和 Workflow 坐标派发 GitHub Run，核对仓库、main、workflow、提交与 Run 身份，并负责观察终态、按原 Run 取消及恢复。控制台的 `tata/产品.mjs` 只调用本产品入口并提供本次授权与任务宿主；观察中断后的定时重连由宿主重新进入所属产品请求以领取本次恢复授权，独立调用仍使用同一本仓入口；恢复失败时原 Run 取消入口仍保持可用，取消不沿用过期观察令牌；远端记录、资产、GitHub App 授权和保存推送仍由原有接口承担。
 同一产品 Build 源码中的合成回归以模拟 GitHub 响应覆盖派发回执、禁止重复派发、身份拒绝、终态观察、原 Run 取消、恢复及过期令牌重新授权；验证过程不触发真实 GitHub 自动化。
 
-
 ## 独立执行与外部接入边界
 
 依赖由本产品的原始锁和既有独立实现准备、保存及复用；直接执行与控制台调用使用同一完整入口。控制台通过对应tata产品文件传递动作、普通工具路径、已授权输入与取消信号，不登记或供应产品依赖，不要求私有资源通道。显式离线缺件和真实执行错误按本产品接口失败，不改变版本、来源或SDK提交。
@@ -448,7 +437,6 @@ Cloudflare账户配置和导出入口唯一接纳CLOUDFLARE_ACCOUNT；调用Wran
 
 本产品配置项统一为name、description、accessLevel、kind、format五个必填字段；不适用规则明确填写“不适用”。name严格使用两组大写字母和一个下划线，同名共用控制台唯一值，当前页仅汇总实际声明的使用产品。操作列固定写入/更换、查看、删除；保密查看保留生物识别。现有配置消费者随声明同步改名，官方工具/API字段保持官方名称，不新增旧名兼容或配置副本。
 
-
 ## 第一方关系结构与唯一数据真源
 
 云端与Linux共用schema.sql的12张业务表：users、signers、instances、grants、contacts、challenges、sessions、nonces、events、releases、listings、posts。Linux只增加entries和objects两张适配表，不另建账户或业务模型。数据库列使用两个单词的snake_case；TypeScript业务变量保持lowerCamelCase，SQL行和JSON原始键遵循所属边界合同；不增加别名或翻译层。
@@ -458,7 +446,6 @@ Cloudflare账户配置和导出入口唯一接纳CLOUDFLARE_ACCOUNT；调用Wran
 listings保留原始signed_payload、payload_signature和发布时instance_key。仅保存搜索、排序、关联和版本比较所需投影；币种、最低金额、媒体地址和服务地址只从原签名载荷读取，投影只能由同一次验签写入。原签名字段、字节及历史密钥不因改名重组。对象文件名由objectFileName唯一计算，不入表；正式对象键、文件字节和官方KV/R2接口不变。
 
 初始化只接受空的所属结构或完整最终结构；旧表、部分结构和字段漂移失败，禁止自动补齐、迁移或重建。导入导出仅接纳当前结构，无旧格式回退。共享Rust本机账户及固定TUYU协议不纳入本节改名；两消费产品继续锁定原共享账户提交。
-
 
 ### 第4步既有回归阻塞收口
 
